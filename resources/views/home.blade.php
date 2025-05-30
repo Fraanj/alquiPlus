@@ -161,7 +161,7 @@
     <div class="grid-filtros">
       <input type="text" placeholder="Buscar por nombre..." />
       <select>
-        <option value="">Filtrar por localidad</option>
+        <option value="">Filtrar por sucursal</option>
         <option value="La Plata">La Plata</option>
         <option value="Berazategui">Berazategui</option>
         <option value="Quilmes">Quilmes</option>
@@ -181,7 +181,7 @@
         <div class="card-content">
           <h2>Tractor John Deere</h2>
           <p>Precio por día: <strong>$2500</strong></p>
-          <p>Localidad: La Plata</p>
+          <p>Sucursal: La Plata</p>
         </div>
       </div>
 
@@ -190,7 +190,7 @@
         <div class="card-content">
           <h2>Retroexcavadora CAT</h2>
           <p>Precio por día: <strong>$3800</strong></p>
-          <p>Localidad: Berazategui</p>
+          <p>Sucursal: Berazategui</p>
         </div>
       </div>
 
@@ -199,44 +199,44 @@
         <div class="card-content">
           <h2>Mini Cargadora Bobcat</h2>
           <p>Precio por día: <strong>$3100</strong></p>
-          <p>Localidad: Quilmes</p>
+          <p>Sucursal: Quilmes</p>
         </div>
       </div>
 
       <!-- Nuevas máquinas -->
       <div class="card">
-        <img src="https://via.placeholder.com/400x220?text=Camion+Volvo" alt="Camión Volvo" />
+        <img src="/images/camion.jpeg" alt="Camión Volvo" />
         <div class="card-content">
           <h2>Camión Volvo</h2>
           <p>Precio por día: <strong>$4200</strong></p>
-          <p>Localidad: Avellaneda</p>
+          <p>Sucursal: Avellaneda</p>
         </div>
       </div>
 
       <div class="card">
-        <img src="https://via.placeholder.com/400x220?text=Excavadora+Komatsu" alt="Excavadora Komatsu" />
+        <img src="/images/komatsu.jpeg" alt="Excavadora Komatsu" />
         <div class="card-content">
           <h2>Excavadora Komatsu</h2>
           <p>Precio por día: <strong>$4600</strong></p>
-          <p>Localidad: Moreno</p>
+          <p>Sucursal: Moreno</p>
         </div>
       </div>
 
       <div class="card">
-        <img src="https://via.placeholder.com/400x220?text=Grúa+Torre" alt="Grúa Torre" />
+        <img src="/images/grua.jpeg" alt="Grúa Torre" />
         <div class="card-content">
           <h2>Grúa Torre</h2>
           <p>Precio por día: <strong>$5000</strong></p>
-          <p>Localidad: La Plata</p>
+          <p>Sucursal: La Plata</p>
         </div>
       </div>
 
       <div class="card">
-        <img src="https://via.placeholder.com/400x220?text=Palas+Cargadoras" alt="Palas Cargadoras" />
+        <img src="/images/cargadora.jpeg" alt="Palas Cargadoras" />
         <div class="card-content">
           <h2>Palas Cargadoras</h2>
           <p>Precio por día: <strong>$3300</strong></p>
-          <p>Localidad: Berazategui</p>
+          <p>Sucursal: Berazategui</p>
         </div>
       </div>
     </div>
