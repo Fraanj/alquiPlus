@@ -6,20 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('reservas', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('maquina_id');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->decimal('monto_total', 10, 2);
+            $table->timestamp('fecha_reserva')->useCurrent();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('maquina_id')->references('id')->on('maquinarias')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('reservas');
