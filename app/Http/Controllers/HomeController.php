@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     public function index()
@@ -21,7 +23,19 @@ class HomeController extends Controller
                 'foto' => 'https://via.placeholder.com/150'
             ]
         ];
+        // Determinar layout según autenticación
+        $layout = auth()->check() ? 'layouts.private' : 'layouts.public';
 
-        return view('home', compact('maquinas'));
+        // Información del usuario para el layout
+        // Usar Auth facade es más claro para el IDE
+        /** @var User|null $user */ // ← Le dice al IDE: "esta variable es de tipo User"
+        $user = Auth::user();
+        $userRole = $user?->role;
+
+        return view('home', [
+            'layout' => $layout,
+            'maquinas' => $maquinas,
+            'userRole' => $userRole
+        ]);
     }
 }

@@ -1,0 +1,66 @@
+/* ================================
+   HEADER & LAYOUT COMÚN
+   ================================ */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo{
+    flex-basis: 20%;
+}
+
+.titulo {
+    flex-basis: 60%;
+    text-align: center;
+}
+
+.logo-img img {
+    height: 50px;
+}
+
+.titulo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.marca {
+    color: orange;
+}
+
+.subtitulo {
+    color: black;
+}
+
+
+.actions {
+    flex-basis: 20%;
+    display: flex;
+    gap: 10px;
+}
+
+.actions a {
+    text-decoration: none;
+    color: white;
+    background-color: #007BFF;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.actions a:hover {
+    background-color: #0056b3;
+}
