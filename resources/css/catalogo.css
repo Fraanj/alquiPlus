@@ -96,22 +96,3 @@ select:focus {
     font-weight: 700;
 }
 
-footer {
-    margin-top: 60px;
-    border-top: 1.5px solid #cbd5e0;
-    padding-top: 24px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #718096;
-}
-
-footer a {
-    color: #3182ce;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-footer a:hover {
-    color: #2c5282;
-    text-decoration: underline;
-}

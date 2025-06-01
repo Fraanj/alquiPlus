@@ -2,24 +2,33 @@
    HEADER & LAYOUT COMÚN
    ================================ */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+[x-cloak] {
+    display: none !important;
+}
 
+/* MEJORAR ALINEACIÓN DEL HEADER */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    align-items: center;
     padding: 1em;
     background-color: #f8f9fa;
     border-bottom: 1px solid #ccc;
 }
 
-.logo{
+.logo {
     flex-basis: 20%;
+    display: flex;
+    justify-content: flex-start; /* Logo a la izquierda */
 }
 
 .titulo {
     flex-basis: 60%;
     text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0;
 }
 
 .logo-img img {
@@ -47,6 +56,8 @@
 .actions {
     flex-basis: 20%;
     display: flex;
+    justify-content: flex-end; /* Botones a la derecha */
+    align-items: center;
     gap: 10px;
 }
 
@@ -63,4 +74,133 @@
 
 .actions a:hover {
     background-color: #0056b3;
+}
+
+/* Dropdown Styles */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-button:hover {
+    background: #f8f9fa;
+    border-color: #bbb;
+}
+
+.user-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.dropdown-arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.06);
+    min-width: 240px;
+    z-index: 1000;
+    margin-top: 8px;
+    padding: 8px 0;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+    color: #111827;
+}
+
+.dropdown-divider {
+    margin: 8px 16px;
+    border: none;
+    border-top: 1px solid #f1f5f9;
+}
+
+.logout-btn {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.logout-btn:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+/* Sobrescribo estilos de .actions a solo para el dropdown */
+.dropdown-menu .dropdown-item {
+    background-color: transparent !important;
+    color: #374151 !important;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f8fafc !important;
+    color: #111827 !important;
+}
+
+footer {
+    margin-top: 60px;
+    border-top: 1.5px solid #cbd5e0;
+    padding-top: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+footer a {
+    color: #3182ce;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #2c5282;
+    text-decoration: underline;
 }
