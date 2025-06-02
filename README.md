@@ -3,6 +3,14 @@ Proyecto simulacro para un empresa en la catedra de Ingenieria de Software 2
 
 # 🚜 Sistema de Maquinarias Agrícolas
 
+## Usuarios cargados automaticamente para realizar pruebas:
+| **Nombre** | **Email** | **Password** | **Rol** |
+| --- | --- | --- | --- |
+| Admin Principal | `admin@maquinarias.com` | `password123` | admin |
+| **Fraanj** | `fraanj@test.com` | `123456` | admin |
+| Juan Empleado | `empleado@maquinarias.com` | `password123` | employee |
+| María Cliente | `cliente@maquinarias.com` | `password123` | user |
+
 ## 🚀 Configuración Inicial del Proyecto
 
 ### 1. Clonar e instalar dependencias

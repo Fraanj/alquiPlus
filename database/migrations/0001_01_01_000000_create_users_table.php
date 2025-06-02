@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,14 +14,20 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 100);
+            $table->string('email', 150)->unique();
+            $table->unsignedInteger('edad');
+            $table->string('password', 255);
+            $table->string('telefono', 20)->nullable();
             $table->enum('role', ['user', 'employee', 'admin'])->default('user');
-            $table->string('name');
-            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
+
+        // Agregar CHECK constraint después de crear la tabla
+        DB::statement('ALTER TABLE users ADD CONSTRAINT chk_edad_minima CHECK (edad >= 18)');
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -48,4 +55,3 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
-

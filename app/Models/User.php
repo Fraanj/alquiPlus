@@ -9,26 +9,22 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Campos que se pueden asignar masivamente
      */
     protected $fillable = [
-        'name',
+        'nombre',
         'email',
+        'edad',
         'password',
+        'telefono',
         'role',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Campos ocultos en serialización
      */
     protected $hidden = [
         'password',
@@ -36,19 +32,35 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Mapeo de campos para Laravel Auth
+     */
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Casts de tipos
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'edad' => 'integer',
+            'created_at' => 'datetime',
         ];
     }
 
-    // Métodos helper para roles
+    /**
+     * Constantes de timestamps personalizadas
+     */
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+    /**
+     * Métodos helper para rolees (usando ENUM)
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -64,13 +76,45 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
-    public function hasRole(string $role): bool
+    public function hasrolee(string $rolee): bool
     {
-        return $this->role === $role;
+        return $this->role === $rolee;
     }
 
     public function canManageMachinery(): bool
     {
         return in_array($this->role, ['admin', 'employee']);
+    }
+
+    /**
+     * Accessor para name (por compatibilidad con Breeze)
+     */
+    public function getNameAttribute()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Accessor para password (por compatibilidad con Breeze)
+     */
+    public function getPasswordAttribute()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Mutator para name (por compatibilidad con Breeze)
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['nombre'] = $value;
+    }
+
+    /**
+     * Mutator para password (por compatibilidad con Breeze)
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = $value;
     }
 }

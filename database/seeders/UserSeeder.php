@@ -8,43 +8,48 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeder.
-     */
     public function run(): void
     {
-        // Crear Admin
+        // Admin Principal
         User::create([
-            'name' => 'Admin Principal',
+            'nombre' => 'Admin Principal',
             'email' => 'admin@maquinarias.com',
             'password' => Hash::make('password123'),
+            'edad' => 35,
+            'telefono' => '+54 11 1234-5678',
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);
 
-        // Crear Empleado
+        // Empleado
         User::create([
-            'name' => 'Juan Empleado',
+            'nombre' => 'Juan Empleado',
             'email' => 'empleado@maquinarias.com',
             'password' => Hash::make('password123'),
+            'edad' => 28,
+            'telefono' => '+54 11 8765-4321',
             'role' => 'employee',
             'email_verified_at' => now(),
         ]);
 
-        // Crear Usuario normal
+        // Usuario Cliente
         User::create([
-            'name' => 'María Cliente',
+            'nombre' => 'María Cliente',
             'email' => 'cliente@maquinarias.com',
             'password' => Hash::make('password123'),
+            'edad' => 42,
+            'telefono' => '+54 11 5555-6666',
             'role' => 'user',
             'email_verified_at' => now(),
         ]);
 
-        // Crear tu usuario personal (admin)
+        // Tu usuario personal
         User::create([
-            'name' => 'Fraanj',
+            'nombre' => 'Fraanj',
             'email' => 'fraanj@test.com',
             'password' => Hash::make('123456'),
+            'edad' => 25,
+            'telefono' => '+54 221 592-2204',
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);
