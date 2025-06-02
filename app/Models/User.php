@@ -15,7 +15,7 @@ class User extends Authenticatable
      * Campos que se pueden asignar masivamente
      */
     protected $fillable = [
-        'nombre',
+        'name',
         'email',
         'edad',
         'password',
@@ -32,14 +32,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Mapeo de campos para Laravel Auth
-     */
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
-
-    /**
      * Casts de tipos
      */
     protected function casts(): array
@@ -48,18 +40,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'edad' => 'integer',
-            'created_at' => 'datetime',
         ];
     }
 
     /**
-     * Constantes de timestamps personalizadas
-     */
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
-    /**
-     * Métodos helper para rolees (usando ENUM)
+     * Métodos helper para roles
      */
     public function isAdmin(): bool
     {
@@ -76,45 +61,13 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
-    public function hasrolee(string $rolee): bool
+    public function hasRole(string $role): bool          // ✅ Corregido typo
     {
-        return $this->role === $rolee;
+        return $this->role === $role;
     }
 
     public function canManageMachinery(): bool
     {
         return in_array($this->role, ['admin', 'employee']);
-    }
-
-    /**
-     * Accessor para name (por compatibilidad con Breeze)
-     */
-    public function getNameAttribute()
-    {
-        return $this->nombre;
-    }
-
-    /**
-     * Accessor para password (por compatibilidad con Breeze)
-     */
-    public function getPasswordAttribute()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Mutator para name (por compatibilidad con Breeze)
-     */
-    public function setNameAttribute($value)
-    {
-        $this->attributes['nombre'] = $value;
-    }
-
-    /**
-     * Mutator para password (por compatibilidad con Breeze)
-     */
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = $value;
     }
 }

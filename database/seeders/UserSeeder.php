@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         // Admin Principal
         User::create([
-            'nombre' => 'Admin Principal',
+            'name' => 'Admin Principal',
             'email' => 'admin@maquinarias.com',
             'password' => Hash::make('password123'),
             'edad' => 35,
@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
 
         // Empleado
         User::create([
-            'nombre' => 'Juan Empleado',
+            'name' => 'Juan Empleado',
             'email' => 'empleado@maquinarias.com',
             'password' => Hash::make('password123'),
             'edad' => 28,
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
 
         // Usuario Cliente
         User::create([
-            'nombre' => 'María Cliente',
+            'name' => 'María Cliente',
             'email' => 'cliente@maquinarias.com',
             'password' => Hash::make('password123'),
             'edad' => 42,
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
 
         // Tu usuario personal
         User::create([
-            'nombre' => 'Fraanj',
+            'name' => 'Fraanj',
             'email' => 'fraanj@test.com',
             'password' => Hash::make('123456'),
             'edad' => 25,
