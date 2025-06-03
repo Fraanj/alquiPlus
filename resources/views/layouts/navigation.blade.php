@@ -5,9 +5,6 @@
                 <img src="/images/mannylogo.png" alt="Logo" />
             </a>
         </div>
-        <a class="btn btn-primary" href="{{ route('maquinarias.create') }}">
-            Cargar maquina
-        </a>
     </div>
 
     <!-- Título -->
@@ -20,6 +17,13 @@
     <!-- Navegación dinámica -->
     <div class="actions">
         @auth
+            @if(Auth::user()->isAdmin())
+            <div>
+                <a class="btn btn-primary" href="{{ route('maquinarias.create') }}">
+                    Cargar maquina
+                </a>
+            </div>
+            @endif
             <!-- Usuario AUTENTICADO - Dropdown -->
             <div class="user-dropdown" x-data="{ open: false }" x-on:click.outside="open = false">
                 <button @click="open = !open" class="user-button" type="button">
