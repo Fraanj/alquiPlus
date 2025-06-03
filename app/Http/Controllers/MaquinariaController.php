@@ -20,7 +20,7 @@ class MaquinariaController extends Controller
             'nombre' => 'required|max:100',
             'descripcion' => 'nullable',
             'tipo_id' => 'required|integer',
-            'precio_por_dia' => 'required|numeric',
+            'precio_por_dia' => 'required|numeric|min:0',
             'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048',
             'politica_reembolso' => 'required|in:0,20,100',
             'disclaimer' => 'nullable',

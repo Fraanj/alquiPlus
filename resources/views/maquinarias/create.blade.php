@@ -31,7 +31,7 @@
             </select>
 
             <label style="display: block; margin-bottom: 5px;">Precio por día:</label>
-            <input type="number" step="0.01" name="precio_por_dia" required style="margin-bottom: 15px; width: 100%;"><br>
+            <input type="number" step="0.01" name="precio_por_dia" requiered min="0" required style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Imagen:</label>
             <input type="file" name="imagen" id="imagen" accept=".jpg,.jpeg" style="margin-bottom: 5px; width: 100%;">
@@ -91,6 +91,19 @@
         };
         reader.readAsDataURL(file);
     });
+</script>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const precioInput = this.querySelector('input[name="precio_por_dia"]');
+    const precio = parseFloat(precioInput.value);
+
+    if (precio < 0) {
+      e.preventDefault(); // detiene el envío del formulario
+      alert('El precio no puede ser negativo');
+      precioInput.focus();
+    }
+  });
 </script>
 
 @endsection
