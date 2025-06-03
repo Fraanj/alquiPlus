@@ -1,4 +1,3 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <form method="POST" action="{{ route('reservas.create') }}" class="p-4 border rounded shadow-sm bg-light">
     @csrf
 
