@@ -44,7 +44,7 @@ class MaquinariaController extends Controller
 
   
 
-        return redirect('/home')->with('success', 'Maquinaria cargada correctamente');
+        return redirect('/')->with('success', 'Maquinaria cargada correctamente');
     }
 
     // lo modifique

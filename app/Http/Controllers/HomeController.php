@@ -4,25 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Maquinaria;
 class HomeController extends Controller
 {
     public function index()
     {
         // Para empezar, vamos a mandar datos fijos
-        $maquinas = [
-            [
-                'titulo' => 'Tractor John Deere',
-                'precio' => 2500,
-                'localidad' => 'La Plata',
-                'foto' => 'https://via.placeholder.com/150'
-            ],
-            [
-                'titulo' => 'Retroexcavadora CAT',
-                'precio' => 3800,
-                'localidad' => 'Berazategui',
-                'foto' => 'https://via.placeholder.com/150'
-            ]
-        ];
+        $maquinas = Maquinaria::all();
         // Determinar layout según autenticación
         $layout = auth()->check() ? 'layouts.private' : 'layouts.public';
 

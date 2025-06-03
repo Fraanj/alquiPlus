@@ -183,12 +183,18 @@
       <div class="disclaimer">{{ $maquinaria->disclaimer }}</div>
     @endif
 
-    <button type="submit" class="btn-alquilar"
-        @if($maquinaria->disponibilidad_id != 1) disabled @endif
-        onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'" 
-        onmouseout="if(!this.disabled) this.style.backgroundColor='#f97316'">
-        Reservar
-    </button>
+    <form method="POST" action="{{ route('reservas.create') }}" class="p-4 border rounded shadow-sm bg-light">
+        @csrf
+        <input type="hidden" name="maquina_id" value="{{ $maquinaria->id }}">
+        <input type="date" name="fecha_inicio" required>
+        <input type="date" name="fecha_fin" required>
+        <button type="submit" class="btn-alquilar"
+            @if($maquinaria->disponibilidad_id != 1) disabled @endif
+            onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'" 
+            onmouseout="if(!this.disabled) this.style.backgroundColor='#f97316'">
+            Reservar
+        </button>
+    </form>
 
 
     <div class="extras">

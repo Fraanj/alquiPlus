@@ -20,28 +20,15 @@
         </div>
 
         <div class="grid-catalogo">
-            <!-- Puedes generar estas cards dinámicamente más adelante -->
-            @php
-                $maquinarias = [
-                  ['img' => 'tractorjohn.avif', 'nombre' => 'Tractor John Deere', 'precio' => 2500, 'sucursal' => 'La Plata'],
-                  ['img' => 'imagen9.jpg', 'nombre' => 'Retroexcavadora CAT', 'precio' => 3800, 'sucursal' => 'Berazategui'],
-                  ['img' => 'imagen7.jpg', 'nombre' => 'Mini Cargadora Bobcat', 'precio' => 3100, 'sucursal' => 'Quilmes'],
-                  ['img' => 'imagen1.jpg', 'nombre' => 'Camión Volvo', 'precio' => 4200, 'sucursal' => 'Avellaneda'],
-                  ['img' => 'imagen5.jpg', 'nombre' => 'Excavadora Komatsu', 'precio' => 4600, 'sucursal' => 'Moreno'],
-                  ['img' => 'imagen4.jpg', 'nombre' => 'Grúa Torre', 'precio' => 5000, 'sucursal' => 'La Plata'],
-                  ['img' => 'imagen2.jpg', 'nombre' => 'Palas Cargadoras', 'precio' => 3300, 'sucursal' => 'Berazategui'],
-                ];
-            @endphp
-
-            @foreach($maquinarias as $maq)
-                <div class="card">
-                    <img src="/images/{{ $maq['img'] }}" alt="{{ $maq['nombre'] }}" />
+            @foreach($maquinas as $maq)
+                <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}" class="card" style="text-decoration: none; color: inherit;">
+                    <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
                     <div class="card-content">
-                        <h2>{{ $maq['nombre'] }}</h2>
-                        <p>Precio por día: <strong>${{ $maq['precio'] }}</strong></p>
-                        <p>Sucursal: {{ $maq['sucursal'] }}</p>
+                        <h2>{{ $maq->nombre }}</h2>
+                        <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
+                        <p>{{ $maq->descripcion }}</p>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
 </div>
