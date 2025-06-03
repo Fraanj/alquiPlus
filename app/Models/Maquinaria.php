@@ -17,4 +17,9 @@ class Maquinaria extends Model
         'disclaimer',
         'anio_produccion'
     ];
+
+    public function tipo()
+{
+    return $this->belongsTo(TiposMaquinaria::class, 'tipo_id');
+}
 }

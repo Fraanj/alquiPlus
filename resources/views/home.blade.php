@@ -2,7 +2,6 @@
 @vite('resources/css/catalogo.css')
 
 @section('content')
-
 <div class="container py-4">
         <div class="grid-filtros">
             <input type="text" placeholder="Buscar por nombre..." />
