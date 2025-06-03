@@ -34,7 +34,9 @@
             <input type="number" step="0.01" name="precio_por_dia" required style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Imagen:</label>
-            <input type="file" name="imagen" style="margin-bottom: 15px; width: 100%;"><br>
+            <input type="file" name="imagen" id="imagen" accept=".jpg,.jpeg" style="margin-bottom: 5px; width: 100%;">
+            <small id="errorImagen" style="color: red; display: none; margin-bottom: 15px;"></small>
+
 
             <label style="display: block; margin-bottom: 5px;">Política de reembolso:</label>
             <select name="politica_reembolso" required style="margin-bottom: 15px; width: 100%;">
@@ -54,4 +56,41 @@
             </button>
         </form>
     </div>
+
+    <script>
+    const fileInput = document.querySelector('input[name="imagen"]');
+    const preview = document.getElementById('preview');
+
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+
+        if (!file) {
+            if(preview) {
+                preview.src = "#";
+                preview.style.display = 'none';
+            }
+            return;
+        }
+
+        if (file.type !== 'image/jpeg') {
+            alert('Sólo se permiten imágenes JPG.');
+            fileInput.value = '';
+            if(preview) {
+                preview.src = "#";
+                preview.style.display = 'none';
+            }
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if(preview) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+
 @endsection

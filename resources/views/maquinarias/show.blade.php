@@ -14,7 +14,7 @@
     min-height: 420px; /* más alto para que no quede tan cuadrado */
   }
 
-  .maquinaria-imagen {
+  .maquinaria-imagen {              /*para editar la imagen*/
   flex: 1 1 40%;
   max-height: 300px;
   max-width: 55%; 
@@ -165,12 +165,16 @@
     <div class="badges" style="display: flex; gap: 12px; align-items: center;">
   <span class="badge tipo">Tipo: {{ $maquinaria->tipo->nombre ?? 'Sin especificar' }}</span>
   <span class="badge">Año: {{ $maquinaria->anio_produccion }}</span>
+
   @if($maquinaria->disponibilidad_id == 1)
     <span class="badge disponible">Disponible</span>
-  @else
+  @elseif($maquinaria->disponibilidad_id == 2)
     <span class="badge no-disponible">No disponible</span>
+  @else
+    <span class="badge no-disponible">Fuera de servicio</span>
   @endif
 </div>
+
 
 
     <p class="descripcion">{{ $maquinaria->descripcion }}</p>

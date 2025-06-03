@@ -21,11 +21,13 @@ class MaquinariaController extends Controller
             'descripcion' => 'nullable',
             'tipo_id' => 'required|integer',
             'precio_por_dia' => 'required|numeric',
-            'imagen' => 'nullable|image',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048',
             'politica_reembolso' => 'required|in:0,20,100',
             'disclaimer' => 'nullable',
             'anio_produccion' => 'required|integer',
-        ]);
+        ], [
+            'imagen.mimes' => 'Solo se permiten imágenes en formato JPG o JPEG.',
+        ]); 
 
         // Establecer disponibilidad como "Disponible" por defecto (ID 1, por ejemplo)
           $data = $request->all();
