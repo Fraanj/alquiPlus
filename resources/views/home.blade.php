@@ -1,5 +1,4 @@
 @extends($layout) <!-- valor que devuelve le controlador  -->
-@vite('resources/css/catalogo.css')
 
 @section('content')
 <div class="container py-4">
@@ -25,12 +24,12 @@
             @php
                 $maquinarias = [
                   ['img' => 'tractorjohn.avif', 'nombre' => 'Tractor John Deere', 'precio' => 2500, 'sucursal' => 'La Plata'],
-                  ['img' => 'retroex.jpeg', 'nombre' => 'Retroexcavadora CAT', 'precio' => 3800, 'sucursal' => 'Berazategui'],
-                  ['img' => 'minibob.jpg', 'nombre' => 'Mini Cargadora Bobcat', 'precio' => 3100, 'sucursal' => 'Quilmes'],
-                  ['img' => 'camion.jpeg', 'nombre' => 'Camión Volvo', 'precio' => 4200, 'sucursal' => 'Avellaneda'],
-                  ['img' => 'komatsu.jpeg', 'nombre' => 'Excavadora Komatsu', 'precio' => 4600, 'sucursal' => 'Moreno'],
-                  ['img' => 'grua.jpeg', 'nombre' => 'Grúa Torre', 'precio' => 5000, 'sucursal' => 'La Plata'],
-                  ['img' => 'cargadora.jpeg', 'nombre' => 'Palas Cargadoras', 'precio' => 3300, 'sucursal' => 'Berazategui'],
+                  ['img' => 'imagen9.jpg', 'nombre' => 'Retroexcavadora CAT', 'precio' => 3800, 'sucursal' => 'Berazategui'],
+                  ['img' => 'imagen7.jpg', 'nombre' => 'Mini Cargadora Bobcat', 'precio' => 3100, 'sucursal' => 'Quilmes'],
+                  ['img' => 'imagen1.jpg', 'nombre' => 'Camión Volvo', 'precio' => 4200, 'sucursal' => 'Avellaneda'],
+                  ['img' => 'imagen5.jpg', 'nombre' => 'Excavadora Komatsu', 'precio' => 4600, 'sucursal' => 'Moreno'],
+                  ['img' => 'imagen4.jpg', 'nombre' => 'Grúa Torre', 'precio' => 5000, 'sucursal' => 'La Plata'],
+                  ['img' => 'imagen2.jpg', 'nombre' => 'Palas Cargadoras', 'precio' => 3300, 'sucursal' => 'Berazategui'],
                 ];
             @endphp
 

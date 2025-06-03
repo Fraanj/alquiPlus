@@ -5,16 +5,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-//agrego nahu homecontroller la ruta /home
-Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,7 +29,7 @@ Route::middleware(['auth', 'role:employee,admin'])->group(function () {
 
 use App\Http\Controllers\MaquinariaController;
 
-Route::get('/maquinarias/CrearMaquina', [MaquinariaController::class, 'create']);
+Route::get('/maquinarias/CrearMaquina', [MaquinariaController::class, 'create'])->name('maquinarias.create');
 Route::post('/maquinarias', [MaquinariaController::class, 'store']);
 Route::get('/maquinarias/{id}', [MaquinariaController::class, 'show'])->name('maquinarias.show');
 

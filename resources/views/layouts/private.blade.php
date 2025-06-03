@@ -1,8 +1,11 @@
 <!-- AGREGAR: Tailwind para formularios de Breeze -->
-@vite(['resources/css/app.css', 'resources/js/app.js','resources/css/alerts.css'])
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WYO6X9q0TxXvxdIuFJ5ZkAlhO2G5+AYixF+BPZsLr6+6fUQ1rs9Jz0qX1s9M2zJQ" crossorigin="anonymous">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
