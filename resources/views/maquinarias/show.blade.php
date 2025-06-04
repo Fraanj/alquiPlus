@@ -154,7 +154,8 @@
 
 <div class="maquinaria-container">
   @if ($maquinaria->imagen)
-  <img src="{{ asset(str_replace('public/', '', $maquinaria->imagen)) }}" alt="{{ $maquinaria->nombre }}" class="maquinaria-imagen">
+  <img src="{{ asset('images/' . $maquinaria->imagen) }}" alt="{{ $maquinaria->nombre }}" class="maquinaria-imagen">
+
 
 @endif
 
