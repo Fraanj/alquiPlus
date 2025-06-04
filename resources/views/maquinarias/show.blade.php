@@ -1,5 +1,17 @@
 @extends('layouts.public')
 
+<script>
+    // Pass reserved date ranges as an array of objects
+    const reservedRanges = @json($reservas->map(fn($r) => [
+        'from' => $r->fecha_inicio,
+        'to' => $r->fecha_fin
+    ]));
+</script>
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 @section('content')
 <style>
   .maquinaria-container {
@@ -150,6 +162,44 @@
       text-align: center;
     }
   }
+/* reservas CSS (mejor mover todo el css a otro archivo imo) */
+.flatpickr-input, input[type="date"] {
+  background: #f8fafc;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.flatpickr-input:focus, input[type="date"]:focus {
+  border-color: #f97316;
+  outline: none;
+}
+
+.flatpickr-calendar {
+  font-family: inherit;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border: 1px solid #f97316;
+}
+
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+  background: #f97316;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.flatpickr-day.disabled, .flatpickr-day.notAllowed {
+  background: #f3f3f3;
+  color: #bbb;
+  cursor: not-allowed;
+}
+
 </style>
 
 <div class="maquinaria-container">
@@ -187,8 +237,10 @@
     <form method="POST" action="{{ route('reservas.create') }}" class="p-4 border rounded shadow-sm bg-light">
         @csrf
         <input type="hidden" name="maquina_id" value="{{ $maquinaria->id }}">
-        <input type="date" name="fecha_inicio" required>
-        <input type="date" name="fecha_fin" required>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <input type="text" name="fecha_inicio" placeholder="Fecha inicio" required autocomplete="off">
+            <input type="text" name="fecha_fin" placeholder="Fecha fin" required autocomplete="off">
+        </div>  
         <button type="submit" class="btn-alquilar"
             @if($maquinaria->disponibilidad_id != 1) disabled @endif
             onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'" 
@@ -196,6 +248,56 @@
             Reservar
         </button>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // conversion a flatpickr de las fechas reservadas (bloqueadas)
+            const disabledRanges = reservedRanges.map(range => ({
+                from: range.from,
+                to: range.to
+            }));
+
+            // funcion axuiliar para obtener la fecha de inicio de la siguiente reserva
+            function getNextReservedStart(dateStr) {
+                const date = new Date(dateStr);
+                let next = null;
+                reservedRanges.forEach(range => {
+                    const start = new Date(range.from);
+                    if (start > date && (!next || start < new Date(next))) {
+                        next = range.from;
+                    }
+                });
+                return next;
+            }
+
+            // iniciar fecha inicio (tiene la logica para seleccionar fecha fin)
+            flatpickr("input[name='fecha_inicio']", {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                disable: disabledRanges,
+                onChange: function(selectedDates, dateStr) {
+                    const fechaFinInput = document.querySelector("input[name='fecha_fin']");
+                    // Set minDate to selected start, maxDate to the day before the next reserved range (if any)
+                    const nextReserved = getNextReservedStart(dateStr);
+                    let maxDate = null;
+                    if (nextReserved) {
+                        const d = new Date(nextReserved);
+                        d.setDate(d.getDate() - 1);
+                        maxDate = d.toISOString().slice(0,10);
+                    }
+                    //estas lineas bindean el fecha fin dinamicamente
+                    fechaFinInput._flatpickr.set('minDate', dateStr);
+                    fechaFinInput._flatpickr.set('maxDate', maxDate);
+                }
+            });
+
+            // fecha fin se actualiza dinamicamente desde fecha inicio
+            flatpickr("input[name='fecha_fin']", {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                disable: disabledRanges
+            });
+        });
+      </script>
 
 
     <div class="extras">

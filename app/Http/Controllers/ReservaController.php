@@ -24,8 +24,8 @@ class ReservaController extends Controller
             $maquina = Maquinaria::find($maquina_id);
             $inicio = \Carbon\Carbon::parse($fecha_inicio);
             $fin = \Carbon\Carbon::parse($fecha_fin);
-            $dias = $fin->diffInDays($inicio) + 1;
-            return $maquina->precio * $dias;
+            $dias = $inicio->diffInDays($fin) + 1;
+            return $maquina->precio_por_dia * $dias;
         }
     public function create(Request $request)
     {
