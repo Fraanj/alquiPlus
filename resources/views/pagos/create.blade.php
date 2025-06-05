@@ -7,7 +7,7 @@
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
 <body>
-    <div id="wallet_container"></div>
+    <div id="walletBrick_container"></div>
 
     <script>
         const mp = new MercadoPago("{{ $publicKey }}", { locale: 'es-MX' });
@@ -16,7 +16,7 @@
         const renderWalletBrick = async (bricksBuilder) => {
             await bricksBuilder.create("wallet", "walletBrick_container", {
             initialization: {
-                preferenceId: "{{ $preferenceId }}"
+                preferenceId: "{{ $preference->id }}"
                 }
             })
         };
