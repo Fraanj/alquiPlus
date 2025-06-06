@@ -18,6 +18,7 @@ class Maquinaria extends Model
         'anio_produccion'
     ];
 
+    // lo agregue para que me devuelva el tipo de maquinaria en el show 
     public function tipo()
 {
     return $this->belongsTo(TiposMaquinaria::class, 'tipo_id');

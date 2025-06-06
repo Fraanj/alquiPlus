@@ -54,14 +54,66 @@ class MaquinariaController extends Controller
 
         // Get all reserved date ranges for this machine which are still active
         $reservas = \App\Models\Reserva::where('maquina_id', $id)
-            ->where(function($q) {
-                $q->where('fecha_fin', '>=', now());
-            })
+            ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
             ->get(['fecha_inicio', 'fecha_fin']);
-
+        
         return view('maquinarias.show', [
             'maquinaria' => $maquinaria,
             'reservas' => $reservas,
         ]);
     }
+
+public function edit($id)
+{
+    $maquinaria = Maquinaria::findOrFail($id);
+    $tipos = TiposMaquinaria::all(); // corregido
+    return view('maquinarias.edit', compact('maquinaria', 'tipos'));
+}
+
+public function update(Request $request, $id)
+{
+    $maquinaria = Maquinaria::findOrFail($id);
+
+    $request->validate([
+    'nombre' => 'required|string|max:255',
+    'descripcion' => 'nullable|string',
+    'precio_por_dia' => 'required|numeric|min:0',
+    'anio_produccion' => 'required|integer',
+    'tipo_id' => 'nullable|exists:tipos_maquinaria,id',
+    'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
+
+    $maquinaria->fill($request->except('imagen'));
+
+    if ($request->hasFile('imagen')) {
+        $nombreImagen = time() . '.' . $request->imagen->extension();
+        $request->imagen->move(public_path('images'), $nombreImagen);
+        $maquinaria->imagen = $nombreImagen;
+    }
+
+    $maquinaria->save();
+
+    return redirect('/')->with('success', 'Maquinaria editada correctamente');
+}
+
+public function confirmDelete($id)
+{
+    $maquinaria = Maquinaria::findOrFail($id);
+    return view('maquinarias.delete', compact('maquinaria'));
+}
+
+public function destroy($id)
+{
+    $maquinaria = Maquinaria::findOrFail($id);
+
+    // Si hay imagen asociada, la borra
+    if ($maquinaria->imagen && file_exists(public_path($maquinaria->imagen))) {
+        unlink(public_path($maquinaria->imagen));
+    }
+
+    $maquinaria->delete();
+
+    return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
+}
+
 }

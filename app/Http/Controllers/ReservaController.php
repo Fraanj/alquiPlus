@@ -56,6 +56,7 @@ class ReservaController extends Controller
         return redirect()->route('reservas.pago');
     }
 
+
 public function pago(Request $request)
 {
     $reserva = session('reserva_temporal');
@@ -64,36 +65,55 @@ public function pago(Request $request)
         return redirect()->route('home')->with('error', 'No hay reserva temporal.');
     }
 
-    // 🔐 Clave pública y token (ya estén en POST o GET)
     $publicKey = config('services.mercadopago.key');
     MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
-    // 🛒 Crear la preferencia
     $client = new PreferenceClient();
     $maquina = Maquinaria::find($reserva->maquina_id);
-    $preference = $client->create([
-        "items" => [[
-            "title" => $maquina->nombre,
-            "quantity" => 1,
-            "unit_price" => $reserva->monto_total
-        ]],
-        "statement_descriptor" => "MANNY Maquinarias",
-        "external_reference" => "reserva_" . uniqid(),
 
-        /* "back_urls" => [
-            "success" => url('home') , //AGREGAR EL RETORNO AYUDAAAAAAA <<<<<<<<<<<<<----------------------------
-            "failure" => url('home') ,
-            "pending" => url('home') ,
-        ],
-        "auto_return" => "approved" */
-    ]);
+    try {
+        $preference = $client->create([
+            "items" => [[
+                "title" => $maquina->nombre,
+                "quantity" => 1,
+                "unit_price" => (float) $reserva->monto_total,
+                "currency_id" => "ARS",
+                "description" => $maquina->descripcion
+            ]],
+            "external_reference" => "reserva_" . uniqid(),
+            "statement_descriptor" => "MANNY Maquinarias",
+            "back_urls" => [
+                "success" => route('pago.exitoso'),
+                "failure" => route('pago.fallido'),
+                "pending" => route('pago.fallido')
+            ],
+            // Comentar para desarrollo local
+            // "auto_return" => "approved",
+            //SE ELIMINÓ EL SAVE PORQUE DEBERÍA ESTAR EN SUCCESS NOMÁS.
+        ]);
+        
+    } catch (\MercadoPago\Exceptions\MPApiException $e) {
+        return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+    }
 
+    // IMPORTANTE: Pasar todos los datos necesarios a la vista
+    return view('pagos.create', compact('publicKey', 'preference', 'maquina', 'reserva'));
+}
+
+public function success(Request $request)
+{
+    $reserva = session('reserva_temporal');
     $reserva->save();
     session()->forget('reserva_temporal');
-    // También podrías guardar el preference ID como referencia si lo querés asociar con la reserva.
 
-    return view('pagos.create', compact('publicKey', 'preference'));
+    return view('pago.exitoso');
 }
+
+public function failure(Request $request)
+{
+    return view('pago.fallido');
+}
+
     /*
     public function pago(Request $request)
     {
