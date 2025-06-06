@@ -37,7 +37,14 @@ class ReservaController extends Controller
             'maquina_id' => 'required|exists:maquinarias,id',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+        ], [
+            'fecha_inicio.required' => 'El campo fecha de inicio es obligatorio.',
+            'fecha_fin.required' => 'El campo fecha de fin es obligatorio.',
+            'fecha_inicio.date' => 'La fecha de inicio no es válida.',
+            'fecha_fin.date' => 'La fecha de fin no es válida.',
+            'fecha_fin.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la de inicio.',
         ]);
+
 
         $reserva = new Reserva();
         $reserva->maquina_id = $validated['maquina_id'];

@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:'.User::class],
             'edad' => ['required', 'integer', 'min:18', 'max:100'],
-            'telefono' => ['required', 'string', 'max:20'],
+            'telefono' => ['nullable','string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
         ], [
             'name.required' => 'El nombre es obligatorio.',
@@ -44,7 +44,6 @@ class RegisteredUserController extends Controller
             'edad.required' => 'La edad es obligatoria.',
             'edad.min' => 'Debes ser mayor de 18 años para registrarte.',
             'edad.max' => 'La edad no puede ser mayor a 100 años.',
-            'telefono.required' => 'El teléfono es obligatorio.',
             'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',

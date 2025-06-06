@@ -234,12 +234,22 @@
       <div class="disclaimer">{{ $maquinaria->disclaimer }}</div>
     @endif
 
+    <!-- Mensajes de error desde laravel, no pude configuralos en HTML por la libreria de flatpickr -->
+    @if ($errors->any())
+        <div class="alert alert-danger" style="color: #b91c1c; margin-bottom: 10px;">
+            <ul style="margin: 0; padding-left: 18px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form method="POST" action="{{ route('reservas.create') }}" class="p-4 border rounded shadow-sm bg-light">
         @csrf
         <input type="hidden" name="maquina_id" value="{{ $maquinaria->id }}">
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <input type="text" name="fecha_inicio" placeholder="Fecha inicio" required autocomplete="off">
-            <input type="text" name="fecha_fin" placeholder="Fecha fin" required autocomplete="off">
+            <input type="text" name="fecha_inicio" placeholder="Fecha inicio" autocomplete="off">
+            <input type="text" name="fecha_fin" placeholder="Fecha fin" autocomplete="off">
         </div>
         <button type="submit" class="btn-alquilar"
             @if($maquinaria->disponibilidad_id != 1) disabled @endif

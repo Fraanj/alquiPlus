@@ -49,6 +49,10 @@
                                 </tbody>
                             </table>
                         </div>
+                    @else
+                        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto mt-8 text-center text-gray-500">
+                            Sin reservas registradas
+                        </div>
                     @endif
                 </div>
         </div>

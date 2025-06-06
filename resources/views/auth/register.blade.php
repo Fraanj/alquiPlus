@@ -27,7 +27,7 @@
         <!-- Teléfono -->
         <div class="mt-4">
             <x-input-label for="telefono" :value="__('Teléfono')" />
-            <x-text-input id="telefono" class="block mt-1 w-full" type="tel" name="telefono" :value="old('telefono')" required autocomplete="tel" />
+            <x-text-input id="telefono" class="block mt-1 w-full" type="tel" name="telefono" :value="old('telefono')" autocomplete="tel" />
             <x-input-error :messages="$errors->get('telefono')" class="mt-2" />
         </div>
 

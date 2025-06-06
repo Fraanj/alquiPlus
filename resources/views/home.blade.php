@@ -26,8 +26,17 @@
                         <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
                         <div class="card-content">
                             <h2>{{ $maq->nombre }}</h2>
+                            <p><strong>Descripción:</strong> {{ $maq->descripcion }}</p>
                             <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
-                            <p>{{ $maq->descripcion }}</p>
+                            <p><strong>Estado:</strong>
+                                @if($maq->disponibilidad_id == 1)
+                                    <span style="color:green; font-weight:bold;">Disponible</span>
+                                @elseif($maq->disponibilidad_id == 2)
+                                    <span style="color:red; font-weight:bold;">No disponible</span>
+                                @else
+                                    <span style="color:red; font-weight:bold;">Fuera de servicio</span>
+                                @endif
+                            </p>
                         </div>
                     </a>
                     @auth
