@@ -1,5 +1,5 @@
 <?php
 return [
-    'failed' => 'Credenciales incorrectas.',
-    'password' => 'La contraseña es incorrecta.',
+    'failed' => 'Correo o contraseña incorrecta/s',
+    'password' => 'Correo o contraseña incorrecta/s',
 ];

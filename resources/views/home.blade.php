@@ -45,11 +45,11 @@
                             <a href="{{ route('maquinarias.edit', $maq->id) }}" class="btn btn-outline-primary btn-sm">
                                 ✏️ Editar
                             </a>
-                            <a href="{{ route('maquinarias.destroy', $maq->id) }}"
-                               class="btn btn-outline-danger btn-sm"
-                               onclick="return confirm('¿Estás seguro de que quieres eliminar esta maquinaria?')">
-                                🗑️ Eliminar
-                            </a>
+                          <a href="{{ route('maquinarias.destroy', $maq->id) }}"  {{-- esta ruta la definís abajo --}}
+   class="btn btn-outline-danger btn-sm">
+   🗑️ Eliminar
+</a>
+
                             </div>
                         @endif
                     @endauth
