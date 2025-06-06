@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservas', [ReservaController::class, 'create'])->name('reservas.create');
     Route::get('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.pago');
     Route::post('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.confirmarPago');
+
+    Route::get('/pago/exitoso', [ReservaController::class, 'success'])->name('pago.exitoso');
+    Route::get('/pago/fallido', [ReservaController::class, 'failure'])->name('pago.fallido');
 });
 // Rutas para empleados
 Route::middleware(['auth', 'role:employee'])->group(function () {

@@ -269,14 +269,12 @@
                 return next;
             }
 
-            // iniciar fecha inicio (tiene la logica para seleccionar fecha fin)
             flatpickr("input[name='fecha_inicio']", {
                 dateFormat: "Y-m-d",
                 minDate: "today",
                 disable: disabledRanges,
                 onChange: function(selectedDates, dateStr) {
                     const fechaFinInput = document.querySelector("input[name='fecha_fin']");
-                    // Set minDate to selected start, maxDate to the day before the next reserved range (if any)
                     const nextReserved = getNextReservedStart(dateStr);
                     let maxDate = null;
                     if (nextReserved) {
@@ -284,7 +282,6 @@
                         d.setDate(d.getDate() - 1);
                         maxDate = d.toISOString().slice(0,10);
                     }
-                    //estas lineas bindean el fecha fin dinamicamente
                     fechaFinInput._flatpickr.set('minDate', dateStr);
                     fechaFinInput._flatpickr.set('maxDate', maxDate);
                 }
