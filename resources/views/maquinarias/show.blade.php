@@ -29,7 +29,7 @@
   .maquinaria-imagen {              /*para editar la imagen*/
   flex: 1 1 40%;
   max-height: 300px;
-  max-width: 55%; 
+  max-width: 55%;
   border-radius: 12px;
   object-fit: cover;
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
@@ -240,10 +240,10 @@
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <input type="text" name="fecha_inicio" placeholder="Fecha inicio" required autocomplete="off">
             <input type="text" name="fecha_fin" placeholder="Fecha fin" required autocomplete="off">
-        </div>  
+        </div>
         <button type="submit" class="btn-alquilar"
             @if($maquinaria->disponibilidad_id != 1) disabled @endif
-            onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'" 
+            onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'"
             onmouseout="if(!this.disabled) this.style.backgroundColor='#f97316'">
             Reservar
         </button>
@@ -269,12 +269,14 @@
                 return next;
             }
 
+            // iniciar fecha inicio (tiene la logica para seleccionar fecha fin)
             flatpickr("input[name='fecha_inicio']", {
                 dateFormat: "Y-m-d",
                 minDate: "today",
                 disable: disabledRanges,
                 onChange: function(selectedDates, dateStr) {
                     const fechaFinInput = document.querySelector("input[name='fecha_fin']");
+                    // Set minDate to selected start, maxDate to the day before the next reserved range (if any)
                     const nextReserved = getNextReservedStart(dateStr);
                     let maxDate = null;
                     if (nextReserved) {
@@ -282,6 +284,7 @@
                         d.setDate(d.getDate() - 1);
                         maxDate = d.toISOString().slice(0,10);
                     }
+                    //estas lineas bindean el fecha fin dinamicamente
                     fechaFinInput._flatpickr.set('minDate', dateStr);
                     fechaFinInput._flatpickr.set('maxDate', maxDate);
                 }
@@ -299,7 +302,7 @@
 
     <div class="extras">
       <div class="politica">
-        Política de cancelación: 
+        Política de cancelación:
         @if($maquinaria->politica_reembolso == '100')
           Reembolso completo
         @elseif($maquinaria->politica_reembolso == '20')
