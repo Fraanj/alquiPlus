@@ -1,0 +1,11 @@
+[33m49afb48[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: commit: calendario bug arreglado
+[33m65d22f1[m HEAD@{1}: pull: Fast-forward
+[33mdcfd2c2[m HEAD@{2}: commit: calendario JS hecho (falta arreglar bug de fecha inicial siempre disponible)
+[33meefd16f[m HEAD@{3}: pull: Fast-forward
+[33mebcd6d0[m HEAD@{4}: commit (merge): arregle home, refleja la DB. añadi reservas a vista de maquina
+[33mf05b222[m HEAD@{5}: commit: home releja la DB, permite acceder a las maquinas. vista de maquina ya tiene para hacer la reserva
+[33mc05d55c[m HEAD@{6}: pull: Fast-forward
+[33m80cb1ea[m HEAD@{7}: commit (merge): Merge branch 'main' of https://github.com/Fraanj/alquiPlus
+[33m2c55605[m HEAD@{8}: commit: agrego añadir reserva, falta mover form a vista de maquina y agregar pago
+[33m8953b66[m HEAD@{9}: pull: Fast-forward
+[33m04b1da7[m HEAD@{10}: clone: from https://github.com/Fraanj/alquiPlus

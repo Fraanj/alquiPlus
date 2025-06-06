@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Usuario;
+use App\Models\Maquinaria;
 
 class Reserva extends Model
 {
@@ -27,7 +29,6 @@ class Reserva extends Model
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
-
     public function maquinaria()
     {
         return $this->belongsTo(Maquinaria::class, 'maquina_id');
