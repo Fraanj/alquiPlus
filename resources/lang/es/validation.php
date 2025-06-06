@@ -11,7 +11,6 @@ return [
     'array' => 'El campo :attribute debe ser un array.',
     'before' => 'El campo :attribute debe ser una fecha anterior a :date.',
 
-    // ... otros mensajes omitidos por brevedad
     'failed' => 'Estas credenciales no coinciden con nuestros registros.',
     'confirmed' => 'Las contraseñas no coinciden.',
     'min' => [
@@ -24,6 +23,6 @@ return [
     'password' => 'La contraseña es incorrecta.',
     'confirmed' => 'Las contraseñas no coinciden.',
     'current_password' => 'La contraseña es incorrecta.',
-    // Podés agregar todos los que necesites...
+
 
 ];
