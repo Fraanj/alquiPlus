@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pago</title>
+@extends('layouts.private')
+
+@section('content')
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,11 +39,10 @@
             border-radius: 8px;
         }
     </style>
-</head>
-<body>
+
     <div class="payment-container">
         <h2>Confirmar Pago</h2>
-        
+
         <div class="product-info">
             <h3>Resumen de tu reserva</h3>
             <p><strong>Maquinaria:</strong> {{ $maquina->nombre }}</p>
@@ -61,10 +57,9 @@
         <a href="{{ $preference->init_point }}" class="pay-button">
             Pagar con MercadoPago
         </a>
-        
+
         <p style="margin-top: 20px; color: #666; font-size: 14px;">
             Serás redirigido a MercadoPago para completar el pago de forma segura.
         </p>
     </div>
-</body>
-</html>
+@endsection

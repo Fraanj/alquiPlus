@@ -33,10 +33,10 @@
                     @auth
                         @if(Auth::user()->isAdmin())
                             <div class="admin-actions" style="padding: 12px; border-top: 1px solid #eee;">
-                            <a href="{{-- {{ route('maquinarias.edit', $maq->id) }} --}}" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ route('maquinarias.edit', $maq->id) }}" class="btn btn-outline-primary btn-sm">
                                 ✏️ Editar
                             </a>
-                            <a href="{{-- {{ route('maquinarias.delete', $maq->id) }} --}}"
+                            <a href="{{ route('maquinarias.destroy', $maq->id) }}"
                                class="btn btn-outline-danger btn-sm"
                                onclick="return confirm('¿Estás seguro de que quieres eliminar esta maquinaria?')">
                                 🗑️ Eliminar
