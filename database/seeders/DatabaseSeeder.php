@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             MaquinariaSeeder::class,
             ReseniaSeeder::class,
             ReseniaSeeder::class,
-            ReservaSeeder::class
+            ReservaSeeder::class,
+            TarjetaSeeder::class
         ]);
 
     }

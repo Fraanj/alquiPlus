@@ -1,32 +1,24 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
 </head>
 <body class="font-sans antialiased">
-<div class="min-h-screen bg-gray-100">
-    <!-- MI NAVBAR PERSONALIZADO Y NO DE BREEZE -->
-    <!-- Page Heading -->
-    <header class="header">
-        @include('layouts.navigation')
-    </header>
+<header class="header">
+    @include('layouts.navigation')
+</header>
 
-    <!-- Page Content -->
-    <main>
-        {{ $slot }}
-    </main>
-</div>
+<main class="min-h-screen bg-gray-100">
+    {{ $slot }}
+</main>
+
+<footer>
+    <p>Contacto: <a href="mailto:innovadev@alquiplus.com">innovadev@alquiplus.com</a> |
+        Tel: <a href="tel:+542215922204">+54 221 592 2204</a></p>
+    <p>Dirección: La Plata 21, Buenos Aires, Argentina</p>
+</footer>
 </body>
 </html>

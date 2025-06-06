@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Informacion del perfil') }}
+            {{ __('Información del Perfil') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Actualiza la informacion de tu cuenta y correo electronico") }}
+            {{ __("Actualiza la información de tu perfil y correo electrónico.") }}
         </p>
     </header>
 
@@ -24,27 +24,39 @@
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Mail')" />
+            <x-input-label for="email" :value="__('Correo Electrónico')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Tu mail no esta verificado.') }}
+                        {{ __('Tu correo electrónico no está verificado.') }}
 
                         <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Clickea aqui para reenviar el mail de verificacion.') }}
+                            {{ __('Click aquí para reenviar el correo de verificación.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('Un nuevo link de verificacion ha sido enviado a su mail.') }}
+                            {{ __('Se ha enviado un nuevo enlace de verificación a tu correo electrónico.') }}
                         </p>
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="edad" :value="__('Edad')" />
+            <x-text-input id="edad" name="edad" type="number" class="mt-1 block w-full" :value="old('edad', $user->edad)" required min="18" max="100" />
+            <x-input-error class="mt-2" :messages="$errors->get('edad')" />
+        </div>
+
+        <div>
+            <x-input-label for="telefono" :value="__('Teléfono')" />
+            <x-text-input id="telefono" name="telefono" type="tel" class="mt-1 block w-full" :value="old('telefono', $user->telefono)" required />
+            <x-input-error class="mt-2" :messages="$errors->get('telefono')" />
         </div>
 
         <div class="flex items-center gap-4">
