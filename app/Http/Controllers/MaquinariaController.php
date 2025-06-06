@@ -21,36 +21,32 @@ class MaquinariaController extends Controller
             'descripcion' => 'nullable',
             'tipo_id' => 'required|integer',
             'precio_por_dia' => 'required|numeric|min:0',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'politica_reembolso' => 'required|in:0,20,100',
             'disclaimer' => 'nullable',
             'anio_produccion' => 'required|integer',
         ], [
-            'imagen.mimes' => 'Solo se permiten imágenes en formato JPG o JPEG.',
+            'imagen.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG.',
         ]);
 
-        // Establecer disponibilidad como "Disponible" por defecto (ID 1, por ejemplo)
-          $data = $request->all();
-          $data['disponibilidad_id'] = 1;
+        // Establecer disponibilidad como "Disponible" por defecto (ID 1)
+        $data = $request->all();
+        $data['disponibilidad_id'] = 1;
 
         if ($request->hasFile('imagen')) {
-             $filename = $request->file('imagen')->getClientOriginalName();
-             $path = $request->file('imagen')->move(public_path('images'), $filename);
-             $data['imagen'] = $filename;
-            }
-
+            $nombreImagen = time() . '.' . $request->imagen->extension();
+            $request->imagen->move(public_path('images'), $nombreImagen);
+            $data['imagen'] = $nombreImagen;
+        }
 
         Maquinaria::create($data);
-
-
 
         return redirect('/')->with('success', 'Maquinaria cargada correctamente');
     }
 
-    // lo modifique
     public function show($id)
     {
-       $maquinaria = Maquinaria::with('tipo')->findOrFail($id);
+        $maquinaria = Maquinaria::with('tipo')->findOrFail($id);
 
         // Get all reserved date ranges for this machine which are still active
         $reservas = \App\Models\Reserva::where('maquina_id', $id)
@@ -63,57 +59,61 @@ class MaquinariaController extends Controller
         ]);
     }
 
-public function edit($id)
-{
-    $maquinaria = Maquinaria::findOrFail($id);
-    $tipos = TiposMaquinaria::all(); // corregido
-    return view('maquinarias.edit', compact('maquinaria', 'tipos'));
-}
-
-public function update(Request $request, $id)
-{
-    $maquinaria = Maquinaria::findOrFail($id);
-
-    $request->validate([
-    'nombre' => 'required|string|max:255',
-    'descripcion' => 'nullable|string',
-    'precio_por_dia' => 'required|numeric|min:0',
-    'anio_produccion' => 'required|integer',
-    'tipo_id' => 'nullable|exists:tipos_maquinaria,id',
-    'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-]);
-
-    $maquinaria->fill($request->except('imagen'));
-
-    if ($request->hasFile('imagen')) {
-        $nombreImagen = time() . '.' . $request->imagen->extension();
-        $request->imagen->move(public_path('images'), $nombreImagen);
-        $maquinaria->imagen = $nombreImagen;
+    public function edit($id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
+        $tipos = TiposMaquinaria::all();
+        return view('maquinarias.edit', compact('maquinaria', 'tipos'));
     }
 
-    $maquinaria->save();
+    public function update(Request $request, $id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
 
-    return redirect('/')->with('success', 'Maquinaria editada correctamente');
-}
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'precio_por_dia' => 'required|numeric|min:0',
+            'anio_produccion' => 'required|integer',
+            'tipo_id' => 'nullable|exists:tipos_maquinaria,id',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-public function confirmDelete($id)
-{
-    $maquinaria = Maquinaria::findOrFail($id);
-    return view('maquinarias.delete', compact('maquinaria'));
-}
+        $maquinaria->fill($request->except('imagen'));
 
-public function destroy($id)
-{
-    $maquinaria = Maquinaria::findOrFail($id);
+        if ($request->hasFile('imagen')) {
+            // Eliminar imagen anterior si existe
+            if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
+                unlink(public_path('images/' . $maquinaria->imagen));
+            }
+            
+            $nombreImagen = time() . '.' . $request->imagen->extension();
+            $request->imagen->move(public_path('images'), $nombreImagen);
+            $maquinaria->imagen = $nombreImagen;
+        }
 
-    // Si hay imagen asociada, la borra
-    if ($maquinaria->imagen && file_exists(public_path($maquinaria->imagen))) {
-        unlink(public_path($maquinaria->imagen));
+        $maquinaria->save();
+
+        return redirect('/')->with('success', 'Maquinaria editada correctamente');
     }
 
-    $maquinaria->delete();
+    public function confirmDelete($id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
+        return view('maquinarias.delete', compact('maquinaria'));
+    }
 
-    return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
-}
+    public function destroy($id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
 
+        // Si hay imagen asociada, la borra
+        if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
+            unlink(public_path('images/' . $maquinaria->imagen));
+        }
+
+        $maquinaria->delete();
+
+        return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
+    }
 }
