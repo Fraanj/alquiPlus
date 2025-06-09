@@ -2,7 +2,7 @@
     <header>
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Información del Perfil') }}
-        </h2>
+        </h
 
         <p class="mt-1 text-sm text-gray-600">
             {{ __("Actualiza la información de tu perfil y correo electrónico.") }}

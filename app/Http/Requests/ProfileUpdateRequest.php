@@ -25,6 +25,12 @@ class ProfileUpdateRequest extends FormRequest
                 'max:150',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'dni' => [
+                'required',
+                'string',
+                'regex:/^[0-9]{7,8}$/',
+                Rule::unique(User::class)->ignore($this->user()->id),
+            ],
             'edad' => ['required', 'integer', 'min:18', 'max:100'],
             'telefono' => ['nullable', 'string', 'max:20'],
         ];
@@ -41,6 +47,9 @@ class ProfileUpdateRequest extends FormRequest
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Debe ser un correo electrónico válido.',
             'email.unique' => 'Este correo electrónico ya está registrado.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.regex' => 'El DNI debe contener entre 7 y 8 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado.',
             'edad.required' => 'La edad es obligatoria.',
             'edad.min' => 'Debes ser mayor de 18 años.',
             'edad.max' => 'La edad no puede ser mayor a 100 años.',
