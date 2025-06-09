@@ -10,6 +10,7 @@ class MaquinariaSeeder extends Seeder
     public function run()
     {
         $tipos = ['Excavadora', 'Grúa', 'Retroexcavadora', 'Compactadora', 'Camión Volcador'];
+        $sucursales = ['La Plata', 'Berisso', 'Ensenada'];
 
         for ($i = 1; $i <= 10; $i++) {
             DB::table('maquinarias')->insert([
@@ -22,6 +23,7 @@ class MaquinariaSeeder extends Seeder
                 'politica_reembolso' => collect(['0', '20', '100'])->random(),
                 'disclaimer' => rand(0, 1) ? 'Sujeto a condiciones' : null,
                 'anio_produccion' => rand(2015, 2023),
+                'sucursal' => $sucursales[array_rand($sucursales)],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

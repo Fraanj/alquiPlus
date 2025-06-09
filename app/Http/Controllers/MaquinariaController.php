@@ -11,7 +11,8 @@ class MaquinariaController extends Controller
     public function create()
     {
         $tipos = TiposMaquinaria::all();
-        return view('maquinarias.create', compact('tipos'));
+        $sucursales = Maquinaria::getSucursales();
+        return view('maquinarias.create', compact('tipos', 'sucursales'));
     }
 
     public function store(Request $request)
@@ -25,8 +26,11 @@ class MaquinariaController extends Controller
             'politica_reembolso' => 'required|in:0,20,100',
             'disclaimer' => 'nullable',
             'anio_produccion' => 'required|integer',
+            'sucursal' => 'required|in:La Plata,Berisso,Ensenada',
         ], [
             'imagen.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG.',
+            'sucursal.required' => 'Debe seleccionar una sucursal.',
+            'sucursal.in' => 'La sucursal seleccionada no es válida.',
         ]);
 
         // Establecer disponibilidad como "Disponible" por defecto (ID 1)
@@ -63,7 +67,8 @@ class MaquinariaController extends Controller
     {
         $maquinaria = Maquinaria::findOrFail($id);
         $tipos = TiposMaquinaria::all();
-        return view('maquinarias.edit', compact('maquinaria', 'tipos'));
+        $sucursales = Maquinaria::getSucursales();
+        return view('maquinarias.edit', compact('maquinaria', 'tipos', 'sucursales'));
     }
 
     public function update(Request $request, $id)
@@ -77,6 +82,10 @@ class MaquinariaController extends Controller
             'anio_produccion' => 'required|integer',
             'tipo_id' => 'nullable|exists:tipos_maquinaria,id',
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'sucursal' => 'required|in:La Plata,Berisso,Ensenada',
+        ], [
+            'sucursal.required' => 'Debe seleccionar una sucursal.',
+            'sucursal.in' => 'La sucursal seleccionada no es válida.',
         ]);
 
         $maquinaria->fill($request->except('imagen'));
@@ -86,7 +95,7 @@ class MaquinariaController extends Controller
             if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
                 unlink(public_path('images/' . $maquinaria->imagen));
             }
-            
+
             $nombreImagen = time() . '.' . $request->imagen->extension();
             $request->imagen->move(public_path('images'), $nombreImagen);
             $maquinaria->imagen = $nombreImagen;

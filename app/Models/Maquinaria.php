@@ -15,12 +15,26 @@ class Maquinaria extends Model
         'imagen',
         'politica_reembolso',
         'disclaimer',
-        'anio_produccion'
+        'anio_produccion',
+        'sucursal'
     ];
 
-    // lo agregue para que me devuelva el tipo de maquinaria en el show 
+    // Constantes para las sucursales disponibles
+    public const SUCURSALES = [
+        'La Plata',
+        'Berisso',
+        'Ensenada'
+    ];
+
+    // lo agregue para que me devuelva el tipo de maquinaria en el show
     public function tipo()
-{
-    return $this->belongsTo(TiposMaquinaria::class, 'tipo_id');
-}
+    {
+        return $this->belongsTo(TiposMaquinaria::class, 'tipo_id');
+    }
+
+    // Método helper para obtener las sucursales disponibles
+    public static function getSucursales()
+    {
+        return self::SUCURSALES;
+    }
 }

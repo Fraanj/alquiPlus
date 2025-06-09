@@ -19,6 +19,7 @@ class CreateMaquinariasTable extends Migration
             $table->enum('politica_reembolso', ['0', '20', '100']);
             $table->string('disclaimer', 255)->nullable();
             $table->integer('anio_produccion');
+            $table->enum('sucursal', ['La Plata', 'Berisso', 'Ensenada']);
 
             // Claves foráneas (opcionalmente con restricciones)
             $table->foreign('tipo_id')->references('id')->on('tipos_maquinaria');
