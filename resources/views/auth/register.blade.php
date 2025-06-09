@@ -16,6 +16,14 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- DNI -->
+        <div class="mt-4">
+            <x-input-label for="dni" :value="__('DNI')" />
+            <x-text-input id="dni" class="block mt-1 w-full" type="text" name="dni" :value="old('dni')" required maxlength="8" pattern="[0-9]{7,8}" />
+            <x-input-error :messages="$errors->get('dni')" class="mt-2" />
+            <p class="text-sm text-gray-600 mt-1">Ingrese su DNI sin puntos ni espacios (7 u 8 dígitos)</p>
+        </div>
+
         <!-- Edad -->
         <div class="mt-4">
             <x-input-label for="edad" :value="__('Edad')" />
@@ -61,4 +69,29 @@
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+        // Validación en tiempo real del DNI
+        document.getElementById('dni').addEventListener('input', function(e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Límite de 8 caracteres
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0, 8);
+            }
+        });
+
+        // Validación del formulario antes del envío
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const dni = document.getElementById('dni').value;
+
+            if (dni.length < 7 || dni.length > 8) {
+                e.preventDefault();
+                alert('El DNI debe tener entre 7 y 8 dígitos');
+                document.getElementById('dni').focus();
+                return false;
+            }
+        });
+    </script>
 </x-guest-layout>

@@ -48,6 +48,13 @@
         </div>
 
         <div>
+            <x-input-label for="dni" :value="__('DNI')" />
+            <x-text-input id="dni" name="dni" type="text" class="mt-1 block w-full" :value="old('dni', $user->dni)" required maxlength="8" pattern="[0-9]{7,8}" />
+            <x-input-error class="mt-2" :messages="$errors->get('dni')" />
+            <p class="text-sm text-gray-600 mt-1">DNI sin puntos ni espacios (7 u 8 dígitos)</p>
+        </div>
+
+        <div>
             <x-input-label for="edad" :value="__('Edad')" />
             <x-text-input id="edad" name="edad" type="number" class="mt-1 block w-full" :value="old('edad', $user->edad)" required min="18" max="100" />
             <x-input-error class="mt-2" :messages="$errors->get('edad')" />
@@ -73,4 +80,29 @@
             @endif
         </div>
     </form>
+
+    <script>
+        // Validación en tiempo real del DNI
+        document.getElementById('dni').addEventListener('input', function(e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Límite de 8 caracteres
+            if (this.value.length > 8) {
+                this.value = this.value.slice(0, 8);
+            }
+        });
+
+        // Validación del formulario antes del envío
+        document.querySelector('form[action*="profile.update"]').addEventListener('submit', function(e) {
+            const dni = document.getElementById('dni').value;
+
+            if (dni.length < 7 || dni.length > 8) {
+                e.preventDefault();
+                alert('El DNI debe tener entre 7 y 8 dígitos');
+                document.getElementById('dni').focus();
+                return false;
+            }
+        });
+    </script>
 </section>

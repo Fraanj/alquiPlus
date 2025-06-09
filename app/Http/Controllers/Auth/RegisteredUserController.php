@@ -32,6 +32,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:'.User::class],
+            'dni' => ['required', 'string', 'regex:/^[0-9]{7,8}$/', 'unique:'.User::class],
             'edad' => ['required', 'integer', 'min:18', 'max:100'],
             'telefono' => ['nullable','string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
@@ -41,6 +42,9 @@ class RegisteredUserController extends Controller
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Debe ser un correo electrónico válido.',
             'email.unique' => 'Este correo electrónico ya está registrado.',
+            'dni.required' => 'El DNI es obligatorio.',
+            'dni.regex' => 'El DNI debe contener entre 7 y 8 dígitos.',
+            'dni.unique' => 'Este DNI ya está registrado.',
             'edad.required' => 'La edad es obligatoria.',
             'edad.min' => 'Debes ser mayor de 18 años para registrarte.',
             'edad.max' => 'La edad no puede ser mayor a 100 años.',
@@ -53,11 +57,13 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'dni' => $request->dni,
             'edad' => $request->edad,
             'telefono' => $request->telefono,
             'password' => Hash::make($request->password),
             'role' => 'user', // Por defecto todos se registran como 'user'
         ]);
+
         event(new Registered($user));
 
         Auth::login($user);

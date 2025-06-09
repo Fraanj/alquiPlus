@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('email', 150)->unique();
+            $table->string('dni', 8)->unique();
             $table->unsignedInteger('edad');
             $table->string('password', 255);
             $table->string('telefono', 20)->nullable();
@@ -24,8 +25,6 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
-        // Agregar CHECK constraint después de crear la tabla
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();

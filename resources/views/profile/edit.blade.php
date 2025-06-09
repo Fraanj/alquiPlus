@@ -15,12 +15,12 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> <!-- ← AGREGUÉ mx-auto -->
-                <div class="max-w-xl mx-auto"> <!-- ← AGREGUÉ mx-auto -->
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-            
+            <!--<div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> --><!-- ← AGREGUÉ mx-auto -->
+            <!--    <div class="max-w-xl mx-auto"> --><!-- ← AGREGUÉ mx-auto -->
+            <!--       arroba include('profile.partials.delete-user-form')-->
+            <!--   </div>-->
+            <!-- </div>-->
+
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> <!-- ← AGREGUÉ mx-auto -->
                 <div class="max-w-xl mx-auto">
                     @if(isset($reservas) && count($reservas))

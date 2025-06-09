@@ -17,6 +17,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'dni',
         'edad',
         'password',
         'telefono',
@@ -69,5 +70,16 @@ class User extends Authenticatable
     public function canManageMachinery(): bool
     {
         return in_array($this->role, ['admin', 'employee']);
+    }
+
+    /**
+     * Formatear DNI para mostrar
+     */
+    public function getFormattedDniAttribute(): string
+    {
+        if (strlen($this->dni) === 8) {
+            return number_format($this->dni, 0, '', '.');
+        }
+        return $this->dni;
     }
 }
