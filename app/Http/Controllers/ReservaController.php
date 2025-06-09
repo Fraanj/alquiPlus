@@ -90,9 +90,9 @@ public function pago(Request $request)
             "external_reference" => "reserva_" . uniqid(),
             "statement_descriptor" => "MANNY Maquinarias",
             "back_urls" => [
-                "success" => route('pago.exitoso'),
-                "failure" => route('pago.fallido'),
-                "pending" => route('pago.fallido')
+                "success" => "http://localhost/pago/exitoso",
+                "failure" => "http://localhost/pago/fallido", 
+                "pending" => "http://localhost/pago/pendiente"
             ],
             // Comentar para desarrollo local
             // "auto_return" => "approved",
@@ -109,16 +109,55 @@ public function pago(Request $request)
 
 public function success(Request $request)
 {
+    // Parámetros disponibles:
+    $paymentId = $request->get('payment_id');           // ID del pago
+    $status = $request->get('status');                  // Estado: approved, pending, rejected
+    $externalReference = $request->get('external_reference'); // Tu referencia externa
+    $merchantOrder = $request->get('merchant_order_id'); // ID de la orden
+    
+    // Opcional: Validar el pago con la API
+    $payment = new PaymentClient();
+    $paymentData = $payment->get($paymentId);
+    
+    // Procesar la reserva exitosa
     $reserva = session('reserva_temporal');
-    $reserva->save();
-    session()->forget('reserva_temporal');
-
-    return view('pago.exitoso');
+    if ($reserva && $status === 'approved') {
+        // Guardar reserva en BD
+        // Limpiar sesión
+        session()->forget('reserva_temporal');
+    }
+    
+    return view('pagos.success', compact('paymentData'));
 }
 
 public function failure(Request $request)
 {
-    return view('pago.fallido');
+    // Parámetros disponibles:
+    $paymentId = $request->get('payment_id');
+    $status = $request->get('status');                  // rejected, cancelled
+    $externalReference = $request->get('external_reference');
+    $statusDetail = $request->get('status_detail');    // Detalle del error
+    
+    return view('pagos.failure', [
+        'error' => 'Pago rechazado o cancelado',
+        'status' => $status,
+        'statusDetail' => $statusDetail
+    ]);
+}
+
+public function pending(Request $request)
+{
+    // Parámetros disponibles:
+    $paymentId = $request->get('payment_id');
+    $status = $request->get('status');                  // pending
+    $externalReference = $request->get('external_reference');
+    $statusDetail = $request->get('status_detail');    // pending_waiting_payment, etc.
+    
+    return view('pagos.pending', [
+        'message' => 'Pago pendiente de confirmación',
+        'paymentId' => $paymentId,
+        'statusDetail' => $statusDetail
+    ]);
 }
 
     /*
