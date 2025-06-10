@@ -10,6 +10,7 @@ class CreateMaquinariasTable extends Migration
     {
         Schema::create('maquinarias', function (Blueprint $table) {
             $table->id(); // equivale a INT UNSIGNED AUTO_INCREMENT PRIMARY KEY
+            $table->string('codigo', 6)->unique();
             $table->string('nombre', 100);
             $table->text('descripcion')->nullable();
             $table->unsignedBigInteger('tipo_id');
@@ -26,6 +27,7 @@ class CreateMaquinariasTable extends Migration
             $table->foreign('disponibilidad_id')->references('id')->on('disponibilidades');
 
             $table->timestamps(); // created_at y updated_at
+            $table->softDeletes();
         });
         //se elije unsignedBigInteger para las FK porque los id generados con $table->id() son BIGINT UNSIGNED, y las claves foráneas deben tener el mismo tipo.
     }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Carbon\Carbon; // Importar Carbon
 
 class RegisteredUserController extends Controller
 {
@@ -19,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.register'); // Asegúrate que la vista 'auth.register' se actualice para pedir fecha_nacimiento
     }
 
     /**
@@ -33,7 +34,13 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:'.User::class],
             'dni' => ['required', 'string', 'regex:/^[0-9]{7,8}$/', 'unique:'.User::class],
-            'edad' => ['required', 'integer', 'min:18', 'max:100'],
+            // 'edad' => ['required', 'integer', 'min:18', 'max:100'], // Validación original eliminada
+            'fecha_nacimiento' => [
+                'required',
+                'date',
+                'before_or_equal:' . Carbon::now()->subYears(18)->format('Y-m-d'), // Debe tener al menos 18 años
+                'after_or_equal:' . Carbon::now()->subYears(100)->format('Y-m-d') // No más de 100 años
+            ],
             'telefono' => ['nullable','string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::min(8)],
         ], [
@@ -45,9 +52,11 @@ class RegisteredUserController extends Controller
             'dni.required' => 'El DNI es obligatorio.',
             'dni.regex' => 'El DNI debe contener entre 7 y 8 dígitos.',
             'dni.unique' => 'Este DNI ya está registrado.',
-            'edad.required' => 'La edad es obligatoria.',
-            'edad.min' => 'Debes ser mayor de 18 años para registrarte.',
-            'edad.max' => 'La edad no puede ser mayor a 100 años.',
+            // Mensajes para 'edad' eliminados
+            'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
+            'fecha_nacimiento.date' => 'La fecha de nacimiento no es una fecha válida.',
+            'fecha_nacimiento.before_or_equal' => 'Debes tener al menos 18 años para registrarte.',
+            'fecha_nacimiento.after_or_equal' => 'La fecha de nacimiento indica una edad mayor a 100 años.',
             'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
@@ -58,7 +67,8 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'dni' => $request->dni,
-            'edad' => $request->edad,
+            // 'edad' => $request->edad, // Campo original eliminado
+            'fecha_nacimiento' => $request->fecha_nacimiento, // Nuevo campo
             'telefono' => $request->telefono,
             'password' => Hash::make($request->password),
             'role' => 'user', // Por defecto todos se registran como 'user'

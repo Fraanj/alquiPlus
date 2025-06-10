@@ -3,7 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+// No necesitas DB aquí si no haces operaciones raw
+// use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -17,7 +18,8 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('email', 150)->unique();
             $table->string('dni', 8)->unique();
-            $table->unsignedInteger('edad');
+            // $table->unsignedInteger('edad'); // Columna original eliminada
+            $table->date('fecha_nacimiento'); // Nueva columna, obligatoria por defecto
             $table->string('password', 255);
             $table->string('telefono', 20)->nullable();
             $table->enum('role', ['user', 'employee', 'admin'])->default('user');

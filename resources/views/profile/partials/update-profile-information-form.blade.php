@@ -2,7 +2,7 @@
     <header>
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Información del Perfil') }}
-        </h
+        </h2>
 
         <p class="mt-1 text-sm text-gray-600">
             {{ __("Actualiza la información de tu perfil y correo electrónico.") }}
@@ -55,14 +55,16 @@
         </div>
 
         <div>
-            <x-input-label for="edad" :value="__('Edad')" />
-            <x-text-input id="edad" name="edad" type="number" class="mt-1 block w-full" :value="old('edad', $user->edad)" required min="18" max="100" />
-            <x-input-error class="mt-2" :messages="$errors->get('edad')" />
+            <x-input-label for="fecha_nacimiento_profile_flatpickr" :value="__('Fecha de Nacimiento')" />
+            {{-- Cambiado type a text y el ID --}}
+            <x-text-input id="fecha_nacimiento_profile_flatpickr" name="fecha_nacimiento" type="text" class="mt-1 block w-full" :value="old('fecha_nacimiento', $user->fecha_nacimiento ? $user->fecha_nacimiento->format('Y-m-d') : '')" required placeholder="Selecciona tu fecha de nacimiento"/>
+            <x-input-error class="mt-2" :messages="$errors->get('fecha_nacimiento')" />
+            <p class="text-sm text-gray-600 mt-1">Debes ser mayor de 18 años.</p>
         </div>
 
         <div>
             <x-input-label for="telefono" :value="__('Teléfono')" />
-            <x-text-input id="telefono" name="telefono" type="tel" class="mt-1 block w-full" :value="old('telefono', $user->telefono)" required />
+            <x-text-input id="telefono" name="telefono" type="tel" class="mt-1 block w-full" :value="old('telefono', $user->telefono)" />
             <x-input-error class="mt-2" :messages="$errors->get('telefono')" />
         </div>
 
@@ -81,27 +83,72 @@
         </div>
     </form>
 
+    {{-- Script original del usuario para DNI --}}
     <script>
         // Validación en tiempo real del DNI
-        document.getElementById('dni').addEventListener('input', function(e) {
-            // Solo permitir números
-            this.value = this.value.replace(/[^0-9]/g, '');
-
-            // Límite de 8 caracteres
-            if (this.value.length > 8) {
-                this.value = this.value.slice(0, 8);
-            }
-        });
+        // Se asume que id="dni" es el correcto para este campo en este formulario.
+        // Si este es un partial que se carga en una página con otro input con id="dni",
+        // considera darle un ID único como 'dni_profile' para evitar conflictos.
+        // Por ahora, lo dejamos como 'dni' según tu código original.
+        const dniInputProfile = document.getElementById('dni');
+        if (dniInputProfile) {
+            dniInputProfile.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length > 8) {
+                    this.value = this.value.slice(0, 8);
+                }
+            });
+        }
 
         // Validación del formulario antes del envío
-        document.querySelector('form[action*="profile.update"]').addEventListener('submit', function(e) {
-            const dni = document.getElementById('dni').value;
+        const profileUpdateForm = document.querySelector('form[action*="profile.update"]');
+        if (profileUpdateForm) {
+            profileUpdateForm.addEventListener('submit', function(e) {
+                const dniValue = dniInputProfile ? dniInputProfile.value : ''; // Usar la variable ya definida
+                if (dniValue.length < 7 || dniValue.length > 8) {
+                    e.preventDefault();
+                    alert('El DNI debe tener entre 7 y 8 dígitos');
+                    if (dniInputProfile) dniInputProfile.focus();
+                    return false;
+                }
+            });
+        }
+    </script>
 
-            if (dni.length < 7 || dni.length > 8) {
-                e.preventDefault();
-                alert('El DNI debe tener entre 7 y 8 dígitos');
-                document.getElementById('dni').focus();
-                return false;
+    {{-- Inicializar Flatpickr para el campo de fecha de nacimiento del perfil --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Calculamos la fecha máxima para tener 18 años
+            let eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+            // Asegurarse que flatpickr esté disponible globalmente desde app.js
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#fecha_nacimiento_profile_flatpickr", { // ID actualizado
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "j F, Y",
+                    defaultDate: "{{ $user->fecha_nacimiento ? $user->fecha_nacimiento->format('Y-m-d') : '' }}", // Para pre-llenar con el valor actual
+                    maxDate: eighteenYearsAgo,
+                    allowInput: true,
+                    locale: {
+                        firstDayOfWeek: 1,
+                        weekdays: {
+                            shorthand: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+                            longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                        },
+                        months: {
+                            shorthand: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                            longhand: [
+                                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+                                "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+                            ]
+                        },
+                        ordinal: () => { return "º"; }
+                    }
+                });
+            } else {
+                console.error('Flatpickr no está definido en profile form. Asegúrate de que app.js se cargue correctamente y defina window.flatpickr.');
             }
         });
     </script>

@@ -1,4 +1,7 @@
 <x-guest-layout>
+    {{-- Ya no necesitamos el CSS del CDN aquí, se importa en app.js --}}
+    {{-- Ya no necesitamos el JS del CDN aquí, se importa en app.js --}}
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -24,12 +27,12 @@
             <p class="text-sm text-gray-600 mt-1">Ingrese su DNI sin puntos ni espacios (7 u 8 dígitos)</p>
         </div>
 
-        <!-- Edad -->
+        <!-- Fecha de Nacimiento -->
         <div class="mt-4">
-            <x-input-label for="edad" :value="__('Edad')" />
-            <x-text-input id="edad" class="block mt-1 w-full" type="number" name="edad" :value="old('edad')" required min="18" max="100" />
-            <x-input-error :messages="$errors->get('edad')" class="mt-2" />
-            <p class="text-sm text-gray-600 mt-1">Debe ser mayor o igual a 18 años</p>
+            <x-input-label for="fecha_nacimiento" :value="__('Fecha de Nacimiento')" />
+            <x-text-input id="fecha_nacimiento_flatpickr" class="block mt-1 w-full" type="text" name="fecha_nacimiento" :value="old('fecha_nacimiento')" required placeholder="Selecciona tu fecha de nacimiento" />
+            <x-input-error :messages="$errors->get('fecha_nacimiento')" class="mt-2" />
+            <p class="text-sm text-gray-600 mt-1">Debes ser mayor de 18 años.</p>
         </div>
 
         <!-- Teléfono -->
@@ -39,7 +42,7 @@
             <x-input-error :messages="$errors->get('telefono')" class="mt-2" />
         </div>
 
-        <!-- Password -->
+        <!-- Password y Confirm Password (sin cambios) -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Contraseña')" />
             <x-text-input id="password" class="block mt-1 w-full"
@@ -50,7 +53,6 @@
             <p class="text-sm text-gray-600 mt-1">Mínimo 8 caracteres</p>
         </div>
 
-        <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" />
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
@@ -58,6 +60,7 @@
                           name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
+
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
@@ -70,27 +73,60 @@
         </div>
     </form>
 
+    {{-- Script original del usuario para DNI (sin cambios) --}}
     <script>
-        // Validación en tiempo real del DNI
         document.getElementById('dni').addEventListener('input', function(e) {
-            // Solo permitir números
             this.value = this.value.replace(/[^0-9]/g, '');
-
-            // Límite de 8 caracteres
             if (this.value.length > 8) {
                 this.value = this.value.slice(0, 8);
             }
         });
 
-        // Validación del formulario antes del envío
         document.querySelector('form').addEventListener('submit', function(e) {
             const dni = document.getElementById('dni').value;
-
             if (dni.length < 7 || dni.length > 8) {
                 e.preventDefault();
                 alert('El DNI debe tener entre 7 y 8 dígitos');
                 document.getElementById('dni').focus();
                 return false;
+            }
+        });
+    </script>
+
+    {{-- Inicializar Flatpickr --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Calculamos la fecha máxima para tener 18 años
+            let eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+            // Asegurarse que flatpickr esté disponible globalmente desde app.js
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#fecha_nacimiento_flatpickr", {
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "j F, Y",
+                    maxDate: eighteenYearsAgo, // Usamos la fecha calculada
+                    // minDate: "1900-01-01", // Descomentar si quieres una fecha mínima
+                    allowInput: true, // Permite al usuario escribir la fecha directamente
+                    locale: { // Opcional: para traducir Flatpickr al español
+                        firstDayOfWeek: 1,
+                        weekdays: {
+                            shorthand: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+                            longhand: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                        },
+                        months: {
+                            shorthand: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                            longhand: [
+                                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+                                "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+                            ]
+                        },
+                        ordinal: () => { return "º"; }
+                    }
+                });
+            } else {
+                console.error('Flatpickr no está definido. Asegúrate de que app.js se cargue correctamente y defina window.flatpickr.');
             }
         });
     </script>

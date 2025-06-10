@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str; // Importar Str
 
 class MaquinariaSeeder extends Seeder
 {
@@ -13,11 +14,15 @@ class MaquinariaSeeder extends Seeder
         $sucursales = ['La Plata', 'Berisso', 'Ensenada'];
 
         for ($i = 1; $i <= 10; $i++) {
+            // Generar un código simple y único para el seeder
+            $codigo = strtoupper(Str::random(3)) . sprintf('%03d', $i); // Ejemplo: ABC001, XYZ002
+
             DB::table('maquinarias')->insert([
+                'codigo' => $codigo, // Añadido el código
                 'nombre' => "Maquinaria $i",
                 'descripcion' => "Descripción de maquinaria $i",
-                'tipo_id' => rand(1, 3), // asumiendo que hay 3 tipos
-                'disponibilidad_id' => rand(1, 2), // asumiendo que hay 2
+                'tipo_id' => rand(1, 3),
+                'disponibilidad_id' => rand(1, 2),
                 'precio_por_dia' => rand(10000, 20000),
                 'imagen' => "imagen$i.jpg",
                 'politica_reembolso' => collect(['0', '20', '100'])->random(),

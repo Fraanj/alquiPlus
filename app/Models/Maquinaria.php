@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Maquinaria extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
+        'codigo', // Añadido el nuevo campo
         'nombre',
         'descripcion',
         'tipo_id',

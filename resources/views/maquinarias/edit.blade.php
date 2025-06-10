@@ -18,6 +18,9 @@
             @csrf
             @method('PUT')
 
+            <label style="display: block; margin-bottom: 5px;">Código:</label>
+            <input type="text" name="codigo" value="{{ old('codigo', $maquinaria->codigo) }}" required maxlength="6" pattern="[A-Za-z0-9]{6}" title="Debe ser alfanumérico de 6 caracteres." style="margin-bottom: 15px; width: 100%; text-transform: uppercase;"><br>
+
             <label style="display: block; margin-bottom: 5px;">Nombre:</label>
             <input type="text" name="nombre" value="{{ old('nombre', $maquinaria->nombre) }}" required style="margin-bottom: 15px; width: 100%;"><br>
 
@@ -52,16 +55,17 @@
             <small style="color: red; display: none;" id="errorImagen"></small>
 
             @if ($maquinaria->imagen)
-                <img id="preview" src="{{ asset($maquinaria->imagen) }}" style="display: block; max-width: 100%; margin-bottom: 15px;">
+                <img id="preview" src="{{ asset('images/' . $maquinaria->imagen) }}" style="display: block; max-width: 100%; margin-bottom: 15px;">
             @else
-                <img id="preview" style="display: none; max-width: 100%; margin-bottom: 15px;">
+                <img id="preview" src="#" style="display: none; max-width: 100%; margin-bottom: 15px;">
             @endif
+
 
             <label style="display: block; margin-bottom: 5px;">Política de reembolso:</label>
             <select name="politica_reembolso" required style="margin-bottom: 15px; width: 100%;">
-                <option value="0" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == 0 ? 'selected' : '' }}>0%</option>
-                <option value="20" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == 20 ? 'selected' : '' }}>20%</option>
-                <option value="100" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == 100 ? 'selected' : '' }}>100%</option>
+                <option value="0" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == '0' ? 'selected' : '' }}>0%</option>
+                <option value="20" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == '20' ? 'selected' : '' }}>20%</option>
+                <option value="100" {{ old('politica_reembolso', $maquinaria->politica_reembolso) == '100' ? 'selected' : '' }}>100%</option>
             </select><br>
 
             <label style="display: block; margin-bottom: 5px;">Disclaimer (Opcional):</label>
@@ -77,49 +81,57 @@
     </div>
 
     <script>
-        const fileInput = document.querySelector('input[name="imagen"]');
-        const preview = document.getElementById('preview');
+        const fileInputEdit = document.querySelector('input[name="imagen"]'); // Renombrado para evitar conflicto si el script se comparte
+        const previewEdit = document.getElementById('preview');
 
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
+        if (fileInputEdit) {
+            fileInputEdit.addEventListener('change', function(event) {
+                const file = event.target.files[0];
 
-            if (!file) {
-                if(preview) {
-                    preview.src = "#";
-                    preview.style.display = 'none';
+                if (!file) {
+                    if(previewEdit) { // Usar previewEdit
+                        // No cambiar la imagen si no se selecciona un nuevo archivo y ya hay una.
+                        // previewEdit.src = "#";
+                        // previewEdit.style.display = 'none';
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (file.type !== 'image/jpeg') {
-                alert('Sólo se permiten imágenes JPG.');
-                fileInput.value = '';
-                if(preview) {
-                    preview.src = "#";
-                    preview.style.display = 'none';
+                if (file.type !== 'image/jpeg') {
+                    alert('Sólo se permiten imágenes JPG.');
+                    fileInputEdit.value = ''; // Limpiar el input
+                    // No ocultar el preview si ya hay una imagen
+                    return;
                 }
-                return;
-            }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if(preview) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if(previewEdit) { // Usar previewEdit
+                        previewEdit.src = e.target.result;
+                        previewEdit.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const formElementEdit = document.querySelector('form[action*="maquinarias/"]'); // Selector más específico
+        if (formElementEdit) {
+            formElementEdit.addEventListener('submit', function(e) {
+                const precioInput = this.querySelector('input[name="precio_por_dia"]');
+                if (precioInput) {
+                    const precio = parseFloat(precioInput.value);
+                    if (precio < 0) {
+                        e.preventDefault(); // detiene el envío del formulario
+                        alert('El precio no puede ser negativo');
+                        precioInput.focus();
+                    }
                 }
-            };
-            reader.readAsDataURL(file);
-        });
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const precioInput = this.querySelector('input[name="precio_por_dia"]');
-            const precio = parseFloat(precioInput.value);
-
-            if (precio < 0) {
-                e.preventDefault(); // detiene el envío del formulario
-                alert('El precio no puede ser negativo');
-                precioInput.focus();
-            }
-        });
+                const codigoInput = this.querySelector('input[name="codigo"]');
+                if (codigoInput) {
+                    codigoInput.value = codigoInput.value.toUpperCase(); // Convertir a mayúsculas antes de enviar
+                }
+            });
+        }
     </script>
 @endsection

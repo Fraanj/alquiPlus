@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Carbon\Carbon; // Importar Carbon para el cálculo de la edad
 
 class User extends Authenticatable
 {
@@ -18,7 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'dni',
-        'edad',
+        'fecha_nacimiento', // Cambiado de 'edad'
         'password',
         'telefono',
         'role',
@@ -40,8 +41,21 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'edad' => 'integer',
+            'fecha_nacimiento' => 'date', // Cambiado de 'edad' y tipo a 'date'
         ];
+    }
+
+    /**
+     * Accesor para calcular la edad dinámicamente.
+     * El nombre del método debe ser get<NombreAtributo>Attribute.
+     * Laravel lo llamará automáticamente cuando intentes acceder a $user->edad.
+     */
+    public function getEdadAttribute(): ?int
+    {
+        if ($this->fecha_nacimiento) {
+            return Carbon::parse($this->fecha_nacimiento)->age;
+        }
+        return null;
     }
 
     /**
@@ -62,7 +76,7 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
-    public function hasRole(string $role): bool          //  Corregido typo
+    public function hasRole(string $role): bool
     {
         return $this->role === $role;
     }

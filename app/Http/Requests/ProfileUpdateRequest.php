@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon; // 1. Importar Carbon
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -31,7 +32,12 @@ class ProfileUpdateRequest extends FormRequest
                 'regex:/^[0-9]{7,8}$/',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            'edad' => ['required', 'integer', 'min:18', 'max:100'],
+            'fecha_nacimiento' => [ // 3. Añadida validación para fecha_nacimiento
+                'required',
+                'date_format:Y-m-d', // Asegura el formato que envía Flatpickr
+                'before_or_equal:' . Carbon::now()->subYears(18)->format('Y-m-d'), // Debe tener al menos 18 años
+                'after_or_equal:' . Carbon::now()->subYears(100)->format('Y-m-d')  // No más de 100 años (opcional, pero buena práctica)
+            ],
             'telefono' => ['nullable', 'string', 'max:20'],
         ];
     }
@@ -50,9 +56,10 @@ class ProfileUpdateRequest extends FormRequest
             'dni.required' => 'El DNI es obligatorio.',
             'dni.regex' => 'El DNI debe contener entre 7 y 8 dígitos.',
             'dni.unique' => 'Este DNI ya está registrado.',
-            'edad.required' => 'La edad es obligatoria.',
-            'edad.min' => 'Debes ser mayor de 18 años.',
-            'edad.max' => 'La edad no puede ser mayor a 100 años.',
+            'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.', // 5. Añadidos mensajes para fecha_nacimiento
+            'fecha_nacimiento.date_format' => 'La fecha de nacimiento no tiene un formato válido (YYYY-MM-DD).',
+            'fecha_nacimiento.before_or_equal' => 'Debes tener al menos 18 años para registrarte.',
+            'fecha_nacimiento.after_or_equal' => 'La fecha de nacimiento indica una edad no válida (mayor a 100 años).',
             'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
         ];
     }

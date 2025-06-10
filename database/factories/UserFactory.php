@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon; // Importar Carbon
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -23,11 +24,15 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Generar una fecha de nacimiento para alguien entre 18 y 80 años
+        $birthDate = Carbon::now()->subYears(fake()->numberBetween(18, 80))->subDays(fake()->numberBetween(0, 365));
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'dni' => fake()->unique()->numerify('########'), // DNI único de 8 dígitos
-            'edad' => fake()->numberBetween(18, 80),
+            // 'edad' => fake()->numberBetween(18, 80), // Campo original eliminado
+            'fecha_nacimiento' => $birthDate->format('Y-m-d'), // Nuevo campo
             'telefono' => fake()->phoneNumber(),
             'role' => 'user',
             'email_verified_at' => now(),

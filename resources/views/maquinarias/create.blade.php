@@ -16,6 +16,9 @@
         <form action="/maquinarias" method="POST" enctype="multipart/form-data">
             @csrf
 
+            <label style="display: block; margin-bottom: 5px;">Código:</label>
+            <input type="text" name="codigo" value="{{ old('codigo') }}" required maxlength="6" pattern="[A-Za-z0-9]{6}" title="Debe ser alfanumérico de 6 caracteres." style="margin-bottom: 15px; width: 100%; text-transform: uppercase;"><br>
+
             <label style="display: block; margin-bottom: 5px;">Nombre:</label>
             <input type="text" name="nombre" value="{{ old('nombre') }}" required style="margin-bottom: 15px; width: 100%;"><br>
 
@@ -43,7 +46,7 @@
             </select><br>
 
             <label style="display: block; margin-bottom: 5px;">Precio por día:</label>
-            <input type="number" step="0.01" name="precio_por_dia" value="{{ old('precio_por_dia') }}" requiered min="0" required style="margin-bottom: 15px; width: 100%;"><br>
+            <input type="number" step="0.01" name="precio_por_dia" value="{{ old('precio_por_dia') }}" required min="0" style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Imagen:</label>
             <input type="file" name="imagen" id="imagen" accept=".jpg,.jpeg" style="margin-bottom: 5px; width: 100%;">
@@ -71,51 +74,65 @@
 
     <script>
         const fileInput = document.querySelector('input[name="imagen"]');
-        const preview = document.getElementById('preview');
+        const preview = document.getElementById('preview'); // Preview no existe en esta vista, pero el script lo busca.
 
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
+        if (fileInput) {
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
 
-            if (!file) {
-                if(preview) {
-                    preview.src = "#";
-                    preview.style.display = 'none';
+                if (!file) {
+                    if(preview) { // Chequeo si preview existe
+                        preview.src = "#";
+                        preview.style.display = 'none';
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (file.type !== 'image/jpeg') {
-                alert('Sólo se permiten imágenes JPG.');
-                fileInput.value = '';
-                if(preview) {
-                    preview.src = "#";
-                    preview.style.display = 'none';
+                if (file.type !== 'image/jpeg') {
+                    alert('Sólo se permiten imágenes JPG.');
+                    fileInput.value = ''; // Limpiar el input
+                    if(preview) { // Chequeo si preview existe
+                        preview.src = "#";
+                        preview.style.display = 'none';
+                    }
+                    return;
                 }
-                return;
-            }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if(preview) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                // No hay elemento preview en esta vista, así que el código de reader.onload no hará nada visible.
+                // Si quisieras un preview aquí, necesitarías añadir un <img> con id="preview".
+                // const reader = new FileReader();
+                // reader.onload = function(e) {
+                //     if(preview) {
+                //         preview.src = e.target.result;
+                //         preview.style.display = 'block';
+                //     }
+                // };
+                // reader.readAsDataURL(file);
+            });
+        }
+
+        const formElement = document.querySelector('form[action="/maquinarias"]'); // Selector más específico
+        if (formElement) {
+            formElement.addEventListener('submit', function(e) {
+                const precioInput = this.querySelector('input[name="precio_por_dia"]');
+                if (precioInput) {
+                    const precio = parseFloat(precioInput.value);
+                    if (precio < 0) {
+                        e.preventDefault(); // detiene el envío del formulario
+                        alert('El precio no puede ser negativo');
+                        precioInput.focus();
+                    }
                 }
-            };
-            reader.readAsDataURL(file);
-        });
-    </script>
 
-    <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const precioInput = this.querySelector('input[name="precio_por_dia"]');
-            const precio = parseFloat(precioInput.value);
-
-            if (precio < 0) {
-                e.preventDefault(); // detiene el envío del formulario
-                alert('El precio no puede ser negativo');
-                precioInput.focus();
-            }
-        });
+                const codigoInput = this.querySelector('input[name="codigo"]');
+                if (codigoInput) {
+                    codigoInput.value = codigoInput.value.toUpperCase(); // Convertir a mayúsculas antes de enviar
+                    if (!/^[A-Z0-9]{6}$/.test(codigoInput.value)) { // Re-validar formato en cliente (opcional)
+                        // La validación del backend es la principal
+                    }
+                }
+            });
+        }
     </script>
 
 @endsection
