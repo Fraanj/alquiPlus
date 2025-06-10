@@ -32,7 +32,8 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'edad' => ['required', 'integer', 'min:18', 'max:100'],
-            'telefono' => ['nullable', 'string', 'max:20'],
+            'telefono' => ['nullable', 'regex:/^[0-9]+$/', 'min:8', 'max:20'],
+
         ];
     }
 
@@ -54,6 +55,9 @@ class ProfileUpdateRequest extends FormRequest
             'edad.min' => 'Debes ser mayor de 18 años.',
             'edad.max' => 'La edad no puede ser mayor a 100 años.',
             'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
+            'telefono.regex' => 'El teléfono solo puede contener números.',
+            'telefono.min' => 'El teléfono debe tener al menos 8 dígitos.',
+
         ];
     }
 }
