@@ -22,15 +22,18 @@ class MaquinariaController extends Controller
             'descripcion' => 'nullable',
             'tipo_id' => 'required|integer',
             'precio_por_dia' => 'required|numeric|min:0',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'imagen' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'politica_reembolso' => 'required|in:0,20,100',
             'disclaimer' => 'nullable',
-            'anio_produccion' => 'required|integer',
+            'anio_produccion' => 'required|integer|max:' . date('Y'),
             'sucursal' => 'required|in:La Plata,Berisso,Ensenada',
         ], [
             'imagen.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG.',
             'sucursal.required' => 'Debe seleccionar una sucursal.',
             'sucursal.in' => 'La sucursal seleccionada no es válida.',
+            'anio_produccion.max' => 'El año no puede ser mayor al actual.',
+            'imagen.required' => 'La imagen es obligatoria.',
+
         ]);
 
         // Establecer disponibilidad como "Disponible" por defecto (ID 1)
@@ -116,13 +119,20 @@ class MaquinariaController extends Controller
     {
         $maquinaria = Maquinaria::findOrFail($id);
 
-        // Si hay imagen asociada, la borra
-        if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
-            unlink(public_path('images/' . $maquinaria->imagen));
-        }
+        // Deslinkea ("borra") imagen asociada. es mejor que esto no este
+            // if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
+            //     unlink(public_path('images/' . $maquinaria->imagen));
+            // }
 
         $maquinaria->delete();
 
         return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
+    }
+    public function restore($id)
+    {
+        $maquinaria = Maquinaria::onlyTrashed()->findOrFail($id);
+        $maquinaria->restore();
+
+        return redirect('/')->with('success', 'Maquinaria restaurada correctamente.');
     }
 }

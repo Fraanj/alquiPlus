@@ -11,6 +11,7 @@ class HomeController extends Controller
     {
         // Para empezar, vamos a mandar datos fijos
         $maquinas = Maquinaria::all();
+        $maquinariasEliminadas = Maquinaria::onlyTrashed()->get();
         // Determinar layout según autenticación
         $layout = auth()->check() ? 'layouts.private' : 'layouts.public';
 
@@ -23,7 +24,8 @@ class HomeController extends Controller
         return view('home', [
             'layout' => $layout,
             'maquinas' => $maquinas,
-            'userRole' => $userRole
+            'userRole' => $userRole,
+            'maquinariasEliminadas' => $maquinariasEliminadas,
         ]);
     }
 }

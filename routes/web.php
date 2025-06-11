@@ -33,12 +33,14 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
 
 // ⚠️ RUTAS ESPECÍFICAS PRIMERO (antes de las que tienen parámetros)
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
     Route::get('/maquinarias/CrearMaquina', [MaquinariaController::class, 'create'])->name('maquinarias.create');
     Route::post('/maquinarias', [MaquinariaController::class, 'store']);
     Route::get('/maquinarias/{id}/edit', [MaquinariaController::class, 'edit'])->name('maquinarias.edit');
     Route::put('/maquinarias/{id}', [MaquinariaController::class, 'update'])->name('maquinarias.update');
     Route::get('/maquinarias/{id}/delete', [MaquinariaController::class, 'confirmDelete'])->name('maquinarias.confirmDelete');
     Route::delete('/maquinarias/{id}/delete', [MaquinariaController::class, 'destroy'])->name('maquinarias.destroy');
+    Route::get('/maquinarias/{id}/restore', [MaquinariaController::class, 'restore'])->name('maquinarias.restore');
 });
 
 // ⚠️ RUTA CON PARÁMETRO AL FINAL (después de las específicas)

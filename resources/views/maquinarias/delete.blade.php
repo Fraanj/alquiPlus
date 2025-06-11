@@ -5,7 +5,7 @@
     <h2 style="font-size: 20px; font-weight: bold; color: #856404;">¿Estás seguro de que deseas eliminar la maquinaria?</h2>
     <p style="margin-top: 10px;"><strong>Nombre:</strong> {{ $maquinaria->nombre }}</p>
     <p><strong>Tipo:</strong> {{ $maquinaria->tipo->nombre ?? 'Sin tipo' }}</p>
-    <p style="color: #dc3545; font-weight: bold;">Esta acción no se puede deshacer.</p>
+    <p style="color: green; font-weight: bold;">Esta acción se puede deshacer.</p>
 
     <form action="{{ route('maquinarias.destroy', $maquinaria->id) }}" method="POST" style="margin-top: 20px;">
         @csrf
