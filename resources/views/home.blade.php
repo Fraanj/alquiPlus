@@ -11,8 +11,9 @@
                 <option value="Berisso">Berisso</option>
                 <option value="Ensenada">Ensenada</option>
             </select>
-            <select>
-                <option value="">Ordenar por precio</option>
+            <select id="ordenar-precio">
+                <option value="" disabled selected>Ordenar por precio </option>
+                <option value="default">Sin ordenar</option>
                 <option value="asc">Menor a mayor</option>
                 <option value="desc">Mayor a menor</option>
             </select>
@@ -20,7 +21,7 @@
 
         <div class="grid-catalogo">
             @foreach($maquinas as $maq)
-                <div class="card" data-nombre="{{ strtolower($maq->nombre) }}" data-sucursal="{{ $maq->sucursal }}">
+                <div class="card" data-nombre="{{ strtolower($maq->nombre) }}" data-sucursal="{{ $maq->sucursal }}" data-precio="{{ $maq->precio_por_dia }}">
                     <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}"
                        style="text-decoration: none; color: inherit;">
                         <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
@@ -127,22 +128,37 @@
 document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('busqueda-nombre');
     const select = document.getElementById('filtro-sucursal');
-    const cards = document.querySelectorAll('.card');
+    const orden = document.getElementById('ordenar-precio');
+    const grid = document.querySelector('.grid-catalogo');
+    let cards = Array.from(document.querySelectorAll('.card'));
 
-    function filtrar() {
-        const texto = input.value.toLowerCase();
-        const sucursal = select.value;
+    function filtrarYOrdenar() {
+        const texto = input ? input.value.toLowerCase() : '';
+        const sucursal = select ? select.value : '';
+        const ordenValor = orden ? orden.value : 'default';
 
+        // Filtrar
         cards.forEach(card => {
-            const nombre = card.getAttribute('data-nombre');
-            const suc = card.getAttribute('data-sucursal');
+            const nombre = card.getAttribute('data-nombre') || '';
+            const suc = card.getAttribute('data-sucursal') || '';
             const coincideNombre = nombre.includes(texto);
             const coincideSucursal = !sucursal || sucursal === "Todas" || suc === sucursal;
             card.style.display = (coincideNombre && coincideSucursal) ? '' : 'none';
         });
+
+        // Ordenar solo los visibles
+        let visibles = cards.filter(card => card.style.display !== 'none');
+        if (ordenValor === 'asc') {
+            visibles.sort((a, b) => parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio));
+        } else if (ordenValor === 'desc') {
+            visibles.sort((a, b) => parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio));
+        }
+        // Reordenar en el DOM solo los visibles
+        visibles.forEach(card => grid.appendChild(card));
     }
 
-    input.addEventListener('input', filtrar);
-    select.addEventListener('change', filtrar);
+    if(input) input.addEventListener('input', filtrarYOrdenar);
+    if(select) select.addEventListener('change', filtrarYOrdenar);
+    if(orden) orden.addEventListener('change', filtrarYOrdenar);
 });
 </script>
