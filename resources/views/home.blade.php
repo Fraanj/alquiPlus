@@ -79,59 +79,94 @@
         </div>
 
         @auth
-            <h2 class="titulo-eliminadas" style="font-size:2rem; color:#d32f2f; font-weight:bold; letter-spacing:1px; margin-top:1.5rem; margin-bottom:1rem;">
-    Maquinarias eliminadas
-</h2>
+    @if(Auth::user()->isAdmin())
+        <!-- maquinarias eliminadas -->
+        <br>
+        <h2 class="titulo-eliminadas" style="font-size:2rem; color:#d32f2f; font-weight:bold; letter-spacing:1px; margin-top:1.5rem; margin-bottom:1rem;">
+            Maquinarias eliminadas
+        </h2>
+        <div id="grid-catalogo-eliminadas" class="grid-catalogo">
+            @foreach($maquinariasEliminadas as $maq)
+                {{-- Mostrar las máquinas eliminadas --}}
+                <div class="card card-eliminada"
+     style="border: 2px dashed #b91c1c; border-radius: 10px; padding-bottom: 10px;">
 
-@if($maquinariasEliminadas->isEmpty())
-    <div style="text-align:center; color:#b91c1c; font-weight:bold;">
-        No se encuentran maquinarias eliminadas.
+    <!-- Contenido grisado (solo esto tiene opacidad) -->
+    <div style="filter: grayscale(0.7) brightness(0.95); opacity: 0.6; cursor: not-allowed;">
+        <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
+        <div class="card-content">
+            <h2 style="font-weight: bold; color: #7a5c4b;">{{ $maq->nombre }}</h2>
+            <p><strong>Código:</strong> {{ $maq->codigo }}</p>
+            <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
+            <p><strong>Estado:</strong>
+                @if($maq->disponibilidad_id == 1)
+                    <span style="color:green; font-weight:bold;">Disponible</span>
+                @elseif($maq->disponibilidad_id == 2)
+                    <span style="color:red; font-weight:bold;">No disponible</span>
+                @else
+                    <span style="color:red; font-weight:bold;">Fuera de servicio</span>
+                @endif
+            </p>
+        </div>
     </div>
-@else
-    <div id="grid-catalogo-eliminadas" class="grid-catalogo">
-        @foreach($maquinariasEliminadas as $maq)
-            <div class="card card-eliminada"
-                 style="filter: grayscale(0.7) brightness(0.95); opacity: 0.6; border: 2px dashed #b91c1c;">
-                <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}"
-                   style="text-decoration: none; color: inherit;">
-                    <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
-                    <div class="card-content">
-                        <h2>{{ $maq->nombre }}</h2>
-                        @auth
-                            @if(Auth::user()->isAdmin())
-                                <p><strong>Código:</strong> {{ $maq->codigo }}</p>
-                            @endif
-                        @endauth
-                        <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
-                        <p><strong>Estado:</strong>
-                            @if($maq->disponibilidad_id == 1)
-                                <span style="color:green; font-weight:bold;">Disponible</span>
-                            @elseif($maq->disponibilidad_id == 2)
-                                <span style="color:red; font-weight:bold;">No disponible</span>
-                            @else
-                                <span style="color:red; font-weight:bold;">Fuera de servicio</span>
-                            @endif
-                        </p>
-                    </div>
-                </a>
-                @auth
-                    @if(Auth::user()->isAdmin())
-                        <a href="{{ route('maquinarias.restore', $maq->id) }}"
-                           class="btn btn-outline-danger btn-sm">
-                            Restaurar
-                        </a>
-                    @endif
-                @endauth
+
+    <!-- Botón FUERA del área grisada -->
+    <div class="text-center mt-2">
+        <button type="button"
+                style="background-color: #28a745; color: white; font-weight: bold; padding: 6px 14px; border: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
+                onclick="abrirModalRestaurar(`{{ route('maquinarias.restore', $maq->id) }}`, '{{ $maq->nombre }}')">
+            ♻ Restaurar
+        </button>
+    </div>
+</div>
+
+            @endforeach
+        </div>
+    @endif
+@endauth
+
+        <!-- Modal de confirmación reutilizable -->
+<div id="modal-restaurar" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">¿Confirmar restauración?</h2>
+        <p id="texto-maquina-restaurar" class="text-sm text-gray-600 mb-6"></p>
+
+        <form id="form-restaurar" method="GET">
+            <div class="flex justify-end space-x-2">
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                    Restaurar
+                </button>
+                <button type="button"
+                        onclick="cerrarModalRestaurar()"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                    Cancelar
+                </button>
             </div>
-        @endforeach
+        </form>
     </div>
-@endif
+</div>
 
-        @endauth
+
 @endsection
 
 <!-- mover esto al archivo JS -->
 <script>
+ function abrirModalRestaurar(url, nombre) { 
+        // Texto dentro del modal
+        document.getElementById('texto-maquina-restaurar').innerText =
+            `¿Estás seguro de que querés restaurar la máquina "${nombre}"?`;
+
+        // Setea la acción del form con la URL generada
+        document.getElementById('form-restaurar').action = url;
+
+        // Muestra el modal
+        document.getElementById('modal-restaurar').classList.remove('hidden');
+    }
+
+    function cerrarModalRestaurar() {
+        document.getElementById('modal-restaurar').classList.add('hidden');
+    }
 document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('busqueda-nombre');
     const select = document.getElementById('filtro-sucursal');
@@ -168,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mensajeVacio.style.display = visibles.length === 0 ? 'block' : 'none';
         }
     }
-
+    
     if(input) input.addEventListener('input', filtrarYOrdenar);
     if(select) select.addEventListener('change', filtrarYOrdenar);
     if(orden) orden.addEventListener('change', filtrarYOrdenar);
