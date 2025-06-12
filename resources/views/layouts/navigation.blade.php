@@ -71,12 +71,12 @@
 
                     <hr class="dropdown-divider">
 
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form">
                         @csrf
-                        <button type="submit" class="dropdown-item logout-btn">
+                        <button type="button" class="dropdown-item logout-btn" onclick="confirmarCierreSesion()">
                             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                <></svg>
+                            </svg>
                             Cerrar sesión
                         </button>
                     </form>
@@ -88,3 +88,36 @@
             <a href="{{ route('register') }}">Registrarse</a>
         @endauth
     </div>
+</header>
+<div id="modal-confirmacion" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Cerrar sesión</h4>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro que desea cerrar sesión?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-cancelar" class="btn-secundario">Cancelar</button>
+            <button id="btn-confirmar" class="btn-primario">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+
+</style>
+
+<script>
+function confirmarCierreSesion() {
+    const modal = document.getElementById('modal-confirmacion');
+    modal.style.display = 'flex';
+    
+    document.getElementById('btn-cancelar').addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    document.getElementById('btn-confirmar').addEventListener('click', function() {
+        document.getElementById('logout-form').submit();
+    });
+}
+</script>
