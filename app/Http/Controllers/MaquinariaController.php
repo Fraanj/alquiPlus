@@ -123,9 +123,11 @@ class MaquinariaController extends Controller
             // if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
             //     unlink(public_path('images/' . $maquinaria->imagen));
             // }
-
+        if ($maquinaria->tieneReservasPendientes()) {
+            // esto no deberia ser success pero no muestra el mensaje si uso error
+            return redirect('/')->with('success', 'No se puede eliminar la maquina debido a que tiene reservas pendientes.');
+        }
         $maquinaria->delete();
-
         return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
     }
     public function restore($id)

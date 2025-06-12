@@ -62,6 +62,20 @@ class ReservaController extends Controller
 
         return redirect()->route('reservas.pago');
     }
+    public function confirmarRembolso($id)
+    {
+        $reserva = reserva::find($id);
+
+        return view('reservas.rembolso', compact('reserva'));
+    }
+
+    public function destroy(Request $request)
+    {
+        $reserva = reserva::find($request->id);
+        
+        $reserva->delete();
+        return redirect()->route('profile.edit')->with('success', 'Reserva cancelada. Devolucion de dinero correspondiente hecha.');
+    }
 
 
 public function pago(Request $request)

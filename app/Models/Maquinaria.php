@@ -40,4 +40,11 @@ class Maquinaria extends Model
     {
         return self::SUCURSALES;
     }
+
+    public function tieneReservasPendientes()
+    {
+        return $reservas = \App\Models\Reserva::where('maquina_id', $this->id)
+            ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
+            ->exists();
+    }
 }

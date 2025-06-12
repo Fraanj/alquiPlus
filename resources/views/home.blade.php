@@ -19,9 +19,16 @@
             </select>
         </div>
 
-        <div class="grid-catalogo">
+        <div id="grid-catalogo-activos" class="grid-catalogo">
+        <div id="mensaje-vacio" style="display:none; text-align:center; color:#b91c1c; font-weight:bold; margin-top:2rem;">
+            No se encontraron productos para la búsqueda realizada.
+        </div>
             @foreach($maquinas as $maq)
-                <div class="card" data-nombre="{{ strtolower($maq->nombre) }}" data-sucursal="{{ $maq->sucursal }}" data-precio="{{ $maq->precio_por_dia }}">
+                <div class="card"
+                data-nombre="{{ strtolower($maq->nombre) }}"
+                data-sucursal="{{ $maq->sucursal }}"
+                data-precio="{{ $maq->precio_por_dia }}"
+                data-descripcion="{{ strtolower($maq->descripcion) }}">
                     <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}"
                        style="text-decoration: none; color: inherit;">
                         <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
@@ -78,7 +85,7 @@
                 <h2 class="titulo-eliminadas" style="font-size:2rem; color:#d32f2f; font-weight:bold; letter-spacing:1px; margin-top:1.5rem; margin-bottom:1rem;">
                     Maquinarias eliminadas
                 </h2>
-                <div class="grid-catalogo">
+                <div id="grid-catalogo-eliminadas" class="grid-catalogo">
                     @foreach($maquinariasEliminadas as $maq)
                         {{-- Mostrar las máquinas eliminadas --}}
                         <div class="card card-eliminada"
@@ -129,8 +136,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('busqueda-nombre');
     const select = document.getElementById('filtro-sucursal');
     const orden = document.getElementById('ordenar-precio');
-    const grid = document.querySelector('.grid-catalogo');
-    let cards = Array.from(document.querySelectorAll('.card'));
+    const grid = document.getElementById('grid-catalogo-activos');
+    const mensajeVacio = document.getElementById('mensaje-vacio');
+    let cards = Array.from(grid.querySelectorAll('.card'));
 
     function filtrarYOrdenar() {
         const texto = input ? input.value.toLowerCase() : '';
@@ -140,12 +148,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Filtrar
         cards.forEach(card => {
             const nombre = card.getAttribute('data-nombre') || '';
+            const descripcion = card.getAttribute('data-descripcion') || '';
             const suc = card.getAttribute('data-sucursal') || '';
-            const coincideNombre = nombre.includes(texto);
+            const coincideNombre = nombre.includes(texto) || descripcion.includes(texto);
             const coincideSucursal = !sucursal || sucursal === "Todas" || suc === sucursal;
             card.style.display = (coincideNombre && coincideSucursal) ? '' : 'none';
         });
-
         // Ordenar solo los visibles
         let visibles = cards.filter(card => card.style.display !== 'none');
         if (ordenValor === 'asc') {
@@ -153,8 +161,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (ordenValor === 'desc') {
             visibles.sort((a, b) => parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio));
         }
-        // Reordenar en el DOM solo los visibles
         visibles.forEach(card => grid.appendChild(card));
+
+        // Mostrar/ocultar mensaje vacío
+        if (mensajeVacio) {
+            mensajeVacio.style.display = visibles.length === 0 ? 'block' : 'none';
+        }
     }
 
     if(input) input.addEventListener('input', filtrarYOrdenar);

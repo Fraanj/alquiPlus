@@ -19,6 +19,8 @@ Route::middleware('auth')->group(function () {
     // Rutas para usuarios comunes (reservas, etc.)
     Route::get('/reservas', [ReservaController::class, 'form'])->name('reservas.form');
     Route::post('/reservas', [ReservaController::class, 'create'])->name('reservas.create');
+    Route::get('/reservas/{id}/rembolso', [ReservaController::class, 'confirmarRembolso'])->name('reservas.confirmarRembolso');
+    Route::delete('/reservas/{id}/rembolso', [ReservaController::class, 'destroy'])->name('reservas.destroy');
     Route::get('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.pago');
     Route::post('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.confirmarPago');
 
