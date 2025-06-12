@@ -9,11 +9,12 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> <!-- ← AGREGUÉ mx-auto -->
-                <div class="max-w-xl mx-auto"> <!-- ← AGREGUÉ mx-auto -->
+            <div id="cambiar-clave" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto">
+                <div class="max-w-xl mx-auto">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
+
 
             <!--<div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> --><!-- ← AGREGUÉ mx-auto -->
             <!--    <div class="max-w-xl mx-auto"> --><!-- ← AGREGUÉ mx-auto -->
@@ -21,7 +22,7 @@
             <!--   </div>-->
             <!-- </div>-->
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> <!-- ← AGREGUÉ mx-auto -->
+            <div id="reservas" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto"> <!-- ← AGREGUÉ mx-auto -->
                 <div class="max-w-3xl mx-auto"> <!-- Cambiado de max-w-xl a max-w-3xl para que no se desborde la tabla -->
                     @if(isset($reservas) && count($reservas))
                         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mx-auto mt-8">

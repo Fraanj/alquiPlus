@@ -79,54 +79,54 @@
         </div>
 
         @auth
-            @if(Auth::user()->isAdmin())
-                <!-- maquinarias eliminadas -->
-                <br>
-                <h2 class="titulo-eliminadas" style="font-size:2rem; color:#d32f2f; font-weight:bold; letter-spacing:1px; margin-top:1.5rem; margin-bottom:1rem;">
-                    Maquinarias eliminadas
-                </h2>
-                <div id="grid-catalogo-eliminadas" class="grid-catalogo">
-                    @foreach($maquinariasEliminadas as $maq)
-                        {{-- Mostrar las máquinas eliminadas --}}
-                        <div class="card card-eliminada"
-                            style="filter: grayscale(0.7) brightness(0.95); opacity: 0.6; border: 2px dashed #b91c1c;">
-                            <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}"
-                            style="text-decoration: none; color: inherit;">
-                                <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
-                                <div class="card-content">
-                                    <h2>{{ $maq->nombre }}</h2>
+            <h2 class="titulo-eliminadas" style="font-size:2rem; color:#d32f2f; font-weight:bold; letter-spacing:1px; margin-top:1.5rem; margin-bottom:1rem;">
+    Maquinarias eliminadas
+</h2>
 
-                                    {{-- Mostrar el Código solo para administradores autenticados --}}
-                                    @auth
-                                        @if(Auth::user()->isAdmin())
-                                            <p><strong>Código:</strong> {{ $maq->codigo }}</p>
-                                        @endif
-                                    @endauth
+@if($maquinariasEliminadas->isEmpty())
+    <div style="text-align:center; color:#b91c1c; font-weight:bold;">
+        No se encuentran maquinarias eliminadas.
+    </div>
+@else
+    <div id="grid-catalogo-eliminadas" class="grid-catalogo">
+        @foreach($maquinariasEliminadas as $maq)
+            <div class="card card-eliminada"
+                 style="filter: grayscale(0.7) brightness(0.95); opacity: 0.6; border: 2px dashed #b91c1c;">
+                <a href="{{ route('maquinarias.show', ['id' => $maq->id]) }}"
+                   style="text-decoration: none; color: inherit;">
+                    <img src="/images/{{ $maq->imagen }}" alt="{{ $maq->nombre }}" />
+                    <div class="card-content">
+                        <h2>{{ $maq->nombre }}</h2>
+                        @auth
+                            @if(Auth::user()->isAdmin())
+                                <p><strong>Código:</strong> {{ $maq->codigo }}</p>
+                            @endif
+                        @endauth
+                        <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
+                        <p><strong>Estado:</strong>
+                            @if($maq->disponibilidad_id == 1)
+                                <span style="color:green; font-weight:bold;">Disponible</span>
+                            @elseif($maq->disponibilidad_id == 2)
+                                <span style="color:red; font-weight:bold;">No disponible</span>
+                            @else
+                                <span style="color:red; font-weight:bold;">Fuera de servicio</span>
+                            @endif
+                        </p>
+                    </div>
+                </a>
+                @auth
+                    @if(Auth::user()->isAdmin())
+                        <a href="{{ route('maquinarias.restore', $maq->id) }}"
+                           class="btn btn-outline-danger btn-sm">
+                            Restaurar
+                        </a>
+                    @endif
+                @endauth
+            </div>
+        @endforeach
+    </div>
+@endif
 
-                                    <p>Precio por día: <strong>${{ $maq->precio_por_dia }}</strong></p>
-                                    <p><strong>Estado:</strong>
-                                        @if($maq->disponibilidad_id == 1)
-                                            <span style="color:green; font-weight:bold;">Disponible</span>
-                                        @elseif($maq->disponibilidad_id == 2)
-                                            <span style="color:red; font-weight:bold;">No disponible</span>
-                                        @else
-                                            <span style="color:red; font-weight:bold;">Fuera de servicio</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            </a>
-                            @auth
-                                @if(Auth::user()->isAdmin())
-                                    <a href="{{ route('maquinarias.restore', $maq->id) }}"
-                                        class="btn btn-outline-danger btn-sm">
-                                        Restaurar
-                                    </a>
-                                @endif
-                            @endauth
-                        </div>
-                    @endforeach
-                </div>
-            @endif
         @endauth
 @endsection
 
