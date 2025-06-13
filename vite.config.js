@@ -14,7 +14,7 @@ export default defineConfig({
         https: true, // habilita HTTPS en el dev server
         host: '0.0.0.0', // o especifica la IP o dominio adecuado
         hmr: {
-            host: 'e402-200-127-44-229.ngrok-free.app'  // ACA SE CAMBIA CON EL LINK DEL NGROK
+            host: '7770-181-164-169-75.ngrok-free.ap'  // ACA SE CAMBIA CON EL LINK DEL NGROK
         }
     }
 });
