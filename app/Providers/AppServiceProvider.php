@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (request()->getHost() !== 'localhost' && request()->getHost() !== '127.0.0.1') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
         //
     }
 }

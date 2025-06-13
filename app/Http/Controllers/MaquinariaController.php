@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Maquinaria;
 use App\Models\TiposMaquinaria;
+use Illuminate\Validation\Rule;
 
 class MaquinariaController extends Controller
 {
@@ -18,6 +19,7 @@ class MaquinariaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'codigo' => 'required|string|alpha_num|size:6|unique:maquinarias,codigo', // Validación para el código
             'nombre' => 'required|max:100',
             'descripcion' => 'nullable',
             'tipo_id' => 'required|integer',
@@ -28,12 +30,16 @@ class MaquinariaController extends Controller
             'anio_produccion' => 'required|integer|max:' . date('Y'),
             'sucursal' => 'required|in:La Plata,Berisso,Ensenada',
         ], [
+            'codigo.required' => 'El código es obligatorio.',
+            'codigo.string' => 'El código debe ser una cadena de texto.',
+            'codigo.alpha_num' => 'El código solo puede contener letras y números.',
+            'codigo.size' => 'El código debe tener exactamente 6 caracteres.',
+            'codigo.unique' => 'Este código ya está en uso.',
             'imagen.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG.',
             'sucursal.required' => 'Debe seleccionar una sucursal.',
             'sucursal.in' => 'La sucursal seleccionada no es válida.',
             'anio_produccion.max' => 'El año no puede ser mayor al actual.',
             'imagen.required' => 'La imagen es obligatoria.',
-
         ]);
 
         // Establecer disponibilidad como "Disponible" por defecto (ID 1)
@@ -79,16 +85,29 @@ class MaquinariaController extends Controller
         $maquinaria = Maquinaria::findOrFail($id);
 
         $request->validate([
+            'codigo' => [
+                'required',
+                'string',
+                'alpha_num',
+                'size:6',
+                Rule::unique('maquinarias', 'codigo')->ignore($maquinaria->id), // Validación que ignora el registro actual
+            ],
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio_por_dia' => 'required|numeric|min:0',
-            'anio_produccion' => 'required|integer',
+            'anio_produccion' => 'required|integer|max:' . date('Y'),
             'tipo_id' => 'nullable|exists:tipos_maquinaria,id',
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'sucursal' => 'required|in:La Plata,Berisso,Ensenada',
         ], [
+            'codigo.required' => 'El código es obligatorio.',
+            'codigo.string' => 'El código debe ser una cadena de texto.',
+            'codigo.alpha_num' => 'El código solo puede contener letras y números.',
+            'codigo.size' => 'El código debe tener exactamente 6 caracteres.',
+            'codigo.unique' => 'Este código ya está en uso.',
             'sucursal.required' => 'Debe seleccionar una sucursal.',
             'sucursal.in' => 'La sucursal seleccionada no es válida.',
+            'anio_produccion.max' => 'El año no puede ser mayor al actual.',
         ]);
 
         $maquinaria->fill($request->except('imagen'));
@@ -120,14 +139,15 @@ class MaquinariaController extends Controller
         $maquinaria = Maquinaria::findOrFail($id);
 
         // Deslinkea ("borra") imagen asociada. es mejor que esto no este
-            // if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
-            //     unlink(public_path('images/' . $maquinaria->imagen));
-            // }
+        // if ($maquinaria->imagen && file_exists(public_path('images/' . $maquinaria->imagen))) {
+        //     unlink(public_path('images/' . $maquinaria->imagen));
+        // }
 
         $maquinaria->delete();
 
         return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
     }
+
     public function restore($id)
     {
         $maquinaria = Maquinaria::onlyTrashed()->findOrFail($id);

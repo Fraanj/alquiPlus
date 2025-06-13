@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'es'),
 
     'locale' => 'es',
 
@@ -124,5 +124,8 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    'public_url' => env('APP_PUBLIC_URL'),
+    'asset_url' => env('ASSET_URL', 'https://e402-200-127-44-229.ngrok-free.app'), //ACA SE COMPLETA CON EL LINK NGROK
 
 ];

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Client\Payment\PaymentClient; // 👈 Agregar esta línea
 
 class ReservaController extends Controller
 {
@@ -45,7 +46,6 @@ class ReservaController extends Controller
             'fecha_fin.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la de inicio.',
         ]);
 
-
         $reserva = new Reserva();
         $reserva->maquina_id = $validated['maquina_id'];
         $reserva->user_id = auth()->id();
@@ -63,102 +63,187 @@ class ReservaController extends Controller
         return redirect()->route('reservas.pago');
     }
 
+    public function pago(Request $request)
+    {
+        $reserva = session('reserva_temporal');
 
-public function pago(Request $request)
-{
-    $reserva = session('reserva_temporal');
+        if (!$reserva) {
+            return redirect()->route('home')->with('error', 'No hay reserva temporal.');
+        }
 
-    if (!$reserva) {
-        return redirect()->route('home')->with('error', 'No hay reserva temporal.');
-    }
+        $publicKey = config('services.mercadopago.key');
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
-    $publicKey = config('services.mercadopago.key');
-    MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
+        $client = new PreferenceClient();
+        $maquina = Maquinaria::find($reserva->maquina_id);
 
-    $client = new PreferenceClient();
-    $maquina = Maquinaria::find($reserva->maquina_id);
+        // 🌐 OBTENER LA URL BASE DINÁMICA
+        $baseUrl = $this->getPublicUrl();
 
-    try {
-        $preference = $client->create([
-            "items" => [[
-                "title" => $maquina->nombre,
-                "quantity" => 1,
-                "unit_price" => (float) $reserva->monto_total,
-                "currency_id" => "ARS",
-                "description" => $maquina->descripcion
-            ]],
-            "external_reference" => "reserva_" . uniqid(),
-            "statement_descriptor" => "MANNY Maquinarias",
-            "back_urls" => [
-                "success" => "http://localhost/pago/exitoso",
-                "failure" => "http://localhost/pago/fallido", 
-                "pending" => "http://localhost/pago/pendiente"
-            ],
-            // Comentar para desarrollo local
-            // "auto_return" => "approved",
-            //SE ELIMINÓ EL SAVE PORQUE DEBERÍA ESTAR EN SUCCESS NOMÁS.
+        // 🔑 CREAR ID ÚNICO PARA LA RESERVA
+        $reservaId = 'reserva_' . uniqid();
+
+        // 💾 GUARDAR DATOS EN CACHÉ POR 30 MINUTOS
+        \Cache::put($reservaId, [
+            'maquina_id' => $reserva->maquina_id,
+            'user_id' => $reserva->user_id,
+            'fecha_inicio' => $reserva->fecha_inicio,
+            'fecha_fin' => $reserva->fecha_fin,
+            'monto_total' => $reserva->monto_total,
+            'fecha_reserva' => $reserva->fecha_reserva
+        ], 1800); // 30 minutos
+
+        \Log::info('DATOS GUARDADOS EN CACHE', [
+            'reserva_id' => $reservaId,
+            'datos' => \Cache::get($reservaId)
         ]);
-        
-    } catch (\MercadoPago\Exceptions\MPApiException $e) {
-        return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+
+        try {
+            $preference = $client->create([
+                "items" => [[
+                    "title" => $maquina->nombre,
+                    "quantity" => 1,
+                    "unit_price" => (float) $reserva->monto_total,
+                    "currency_id" => "ARS",
+                    "description" => $maquina->descripcion
+                ]],
+                "payer" => [
+                    "email" => Auth::user()->email,
+                ],
+                "external_reference" => $reservaId, // 👈 USAR NUESTRO ID
+                "statement_descriptor" => "MANNY Maquinarias",
+                "back_urls" => [
+                    "success" => $baseUrl . "/pago/exitoso",
+                    "failure" => $baseUrl . "/pago/fallido",
+                    "pending" => $baseUrl . "/pago/pendiente"
+                ],
+                "auto_return" => "approved",
+            ]);
+
+            \Log::info('PREFERENCIA CREADA', [
+                'preference_id' => $preference->id,
+                'external_reference' => $preference->external_reference,
+                'back_urls' => $preference->back_urls
+            ]);
+
+        } catch (\MercadoPago\Exceptions\MPApiException $e) {
+            return back()->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+        }
+
+        return view('pagos.create', compact('publicKey', 'preference', 'maquina', 'reserva'));
     }
 
-    // IMPORTANTE: Pasar todos los datos necesarios a la vista
-    return view('pagos.create', compact('publicKey', 'preference', 'maquina', 'reserva'));
-}
+    // 🌐 MÉTODO PARA OBTENER URL PÚBLICA
+    private function getPublicUrl()
+    {
+        // En desarrollo con Cloudflare Tunnel
+        if (config('app.env') === 'local') {
+            return config('app.public_url', config('app.url'));
+        }
 
-public function success(Request $request)
-{
-    // Parámetros disponibles:
-    $paymentId = $request->get('payment_id');           // ID del pago
-    $status = $request->get('status');                  // Estado: approved, pending, rejected
-    $externalReference = $request->get('external_reference'); // Tu referencia externa
-    $merchantOrder = $request->get('merchant_order_id'); // ID de la orden
-    
-    // Opcional: Validar el pago con la API
-    $payment = new PaymentClient();
-    $paymentData = $payment->get($paymentId);
-    
-    // Procesar la reserva exitosa
-    $reserva = session('reserva_temporal');
-    if ($reserva && $status === 'approved') {
-        // Guardar reserva en BD
-        // Limpiar sesión
-        session()->forget('reserva_temporal');
+        // En producción
+        return config('app.url');
     }
-    
-    return view('pagos.success', compact('paymentData'));
-}
 
-public function failure(Request $request)
-{
-    // Parámetros disponibles:
-    $paymentId = $request->get('payment_id');
-    $status = $request->get('status');                  // rejected, cancelled
-    $externalReference = $request->get('external_reference');
-    $statusDetail = $request->get('status_detail');    // Detalle del error
-    
-    return view('pagos.failure', [
-        'error' => 'Pago rechazado o cancelado',
-        'status' => $status,
-        'statusDetail' => $statusDetail
-    ]);
-}
+    public function success(Request $request)
+    {
+        $paymentId = $request->get('payment_id');
+        $status = $request->get('status');
+        $externalReference = $request->get('external_reference');
 
-public function pending(Request $request)
-{
-    // Parámetros disponibles:
-    $paymentId = $request->get('payment_id');
-    $status = $request->get('status');                  // pending
-    $externalReference = $request->get('external_reference');
-    $statusDetail = $request->get('status_detail');    // pending_waiting_payment, etc.
-    
-    return view('pagos.pending', [
-        'message' => 'Pago pendiente de confirmación',
-        'paymentId' => $paymentId,
-        'statusDetail' => $statusDetail
-    ]);
-}
+        \Log::info('=== DEBUG SUCCESS METHOD ===', [
+            'payment_id' => $paymentId,
+            'status' => $status,
+            'external_reference' => $externalReference,
+            'all_request' => $request->all()
+        ]);
+
+        // 🔒 VALIDAR EL PAGO CON LA API
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
+        $paymentClient = new PaymentClient();
+
+        try {
+            \Log::info('=== ANTES DE LLAMAR A LA API ===');
+            $paymentData = $paymentClient->get($paymentId);
+            \Log::info('=== API RESPONSE OK ===');
+
+            if ($status === 'approved' && $externalReference) {
+                \Log::info('=== PAGO APROBADO - BUSCANDO EN CACHE ===');
+
+                // 📦 OBTENER DATOS DEL CACHÉ
+                $datosReserva = \Cache::get($externalReference);
+
+                \Log::info('=== DATOS DE CACHE ===', [
+                    'external_reference' => $externalReference,
+                    'datos_encontrados' => $datosReserva !== null,
+                    'datos' => $datosReserva
+                ]);
+
+                if ($datosReserva) {
+                    \Log::info('=== CREANDO RESERVA ===');
+
+                    // 💾 CREAR RESERVA CON LOS DATOS DEL CACHÉ
+                    $nuevaReserva = new Reserva();
+                    $nuevaReserva->maquina_id = $datosReserva['maquina_id'];
+                    $nuevaReserva->user_id = $datosReserva['user_id'];
+                    $nuevaReserva->fecha_inicio = $datosReserva['fecha_inicio'];
+                    $nuevaReserva->fecha_fin = $datosReserva['fecha_fin'];
+                    $nuevaReserva->monto_total = $datosReserva['monto_total'];
+                    $nuevaReserva->fecha_reserva = $datosReserva['fecha_reserva'];
+
+                    \Log::info('=== ANTES DE GUARDAR EN BD ===');
+                    $nuevaReserva->save();
+                    \Log::info('=== GUARDADO EN BD OK ===');
+
+                    // Limpiar caché y sesión
+                    \Cache::forget($externalReference);
+                    session()->forget('reserva_temporal');
+
+                    return view('pagos.exitoso', compact('paymentData', 'nuevaReserva'));
+                }
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('=== EXCEPCIÓN CAPTURADA ===', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return redirect()->route('pago.fallido')->with('error', 'Error al validar el pago');
+        }
+
+        return redirect()->route('home')->with('error', 'Pago no válido');
+    }
+
+    public function failure(Request $request)
+    {
+        dd('FAILURE CALLBACK', $request->all());
+        $paymentId = $request->get('payment_id');
+        $status = $request->get('status');
+        $externalReference = $request->get('external_reference');
+        $statusDetail = $request->get('status_detail');
+
+        return view('pagos.fallido', [
+            'error' => 'Pago rechazado o cancelado',
+            'status' => $status,
+            'statusDetail' => $statusDetail
+        ]);
+    }
+
+    public function pending(Request $request)
+    {
+        dd('PENDING CALLBACK', $request->all());
+        $paymentId = $request->get('payment_id');
+        $status = $request->get('status');
+        $externalReference = $request->get('external_reference');
+        $statusDetail = $request->get('status_detail');
+
+        return view('pagos.pendiente', [
+            'message' => 'Pago pendiente de confirmación',
+            'paymentId' => $paymentId,
+            'statusDetail' => $statusDetail
+        ]);
+    }
 
     /*
     public function pago(Request $request)

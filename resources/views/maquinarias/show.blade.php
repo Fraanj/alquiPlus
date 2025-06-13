@@ -262,7 +262,7 @@
                     <input type="text" name="fecha_fin" placeholder="Fecha fin" autocomplete="off">
                 </div>
                 <button type="submit" class="btn-alquilar"
-                        @if($maquinaria->disponibilidad_id != 1) disabled @endif
+                        @if($maquinaria->disponibilidad_id != 1 || (Auth::user()->isAdmin())) disabled @endif
                         onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'"
                         onmouseout="if(!this.disabled) this.style.backgroundColor='#f97316'">
                     Reservar
