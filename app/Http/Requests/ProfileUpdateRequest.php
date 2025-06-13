@@ -39,6 +39,7 @@ class ProfileUpdateRequest extends FormRequest
                 'after_or_equal:' . Carbon::now()->subYears(100)->format('Y-m-d')  // No más de 100 años (opcional, pero buena práctica)
             ],
             'telefono' => ['nullable', 'string', 'max:20'],
+            'current_password' => ['required', 'current_password'],
         ];
     }
 
@@ -61,6 +62,8 @@ class ProfileUpdateRequest extends FormRequest
             'fecha_nacimiento.before_or_equal' => 'Debes tener al menos 18 años para registrarte.',
             'fecha_nacimiento.after_or_equal' => 'La fecha de nacimiento indica una edad no válida (mayor a 100 años).',
             'telefono.max' => 'El teléfono no puede tener más de 20 caracteres.',
+            'current_password.required' => 'La contraseña es obligatoria.',
+            'current_password.current_password' => 'La contraseña ingresada no es correcta.',
         ];
     }
 }

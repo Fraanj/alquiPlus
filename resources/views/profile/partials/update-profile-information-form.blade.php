@@ -68,7 +68,16 @@
             <x-input-error class="mt-2" :messages="$errors->get('telefono')" />
         </div>
 
-        <div class="flex items-center gap-4">
+        
+
+    <div>
+        <x-input-label for="password" :value="__('Verificar Contraseña')" />
+        <x-text-input id="password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+        <x-input-error class="mt-2" :messages="$errors->get('current_password')" />
+        <p class="text-sm text-gray-600 mt-1">Introduce tu contraseña para confirmar los cambios.</p>
+    </div>
+
+    <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Guardar') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
