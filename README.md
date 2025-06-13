@@ -21,6 +21,8 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
+composer require mercadopago/dx-php
+npm install flatpickr
 ```
 
 ### 2. Configurar base de datos
