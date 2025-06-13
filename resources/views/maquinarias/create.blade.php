@@ -17,16 +17,16 @@
             @csrf
 
             <label style="display: block; margin-bottom: 5px;">Código:</label>
-            <input type="text" name="codigo" value="{{ old('codigo') }}" required maxlength="6" pattern="[A-Za-z0-9]{6}" title="Debe ser alfanumérico de 6 caracteres." style="margin-bottom: 15px; width: 100%; text-transform: uppercase;"><br>
+            <input type="text" name="codigo" value="{{ old('codigo') }}" style="margin-bottom: 15px; width: 100%; text-transform: uppercase;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Nombre:</label>
-            <input type="text" name="nombre" value="{{ old('nombre') }}" required style="margin-bottom: 15px; width: 100%;"><br>
+            <input type="text" name="nombre" value="{{ old('nombre') }}"  style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Descripción:</label>
             <textarea name="descripcion" style="margin-bottom: 15px; width: 100%;">{{ old('descripcion') }}</textarea><br>
 
             <label style="display: block; margin-bottom: 5px;">Tipo de Maquinaria:</label>
-            <select name="tipo_id" required style="margin-bottom: 15px; width: 100%;">
+            <select name="tipo_id"  style="margin-bottom: 15px; width: 100%;">
                 <option value=""> Seleccione un tipo </option>
                 @foreach ($tipos as $tipo)
                     <option value="{{ $tipo->id }}" {{ old('tipo_id') == $tipo->id ? 'selected' : '' }}>
@@ -36,7 +36,7 @@
             </select>
 
             <label style="display: block; margin-bottom: 5px;">Sucursal:</label>
-            <select name="sucursal" required style="margin-bottom: 15px; width: 100%;">
+            <select name="sucursal"  style="margin-bottom: 15px; width: 100%;">
                 <option value="">Seleccione una sucursal</option>
                 @foreach ($sucursales as $sucursal)
                     <option value="{{ $sucursal }}" {{ old('sucursal') == $sucursal ? 'selected' : '' }}>
@@ -46,7 +46,7 @@
             </select><br>
 
             <label style="display: block; margin-bottom: 5px;">Precio por día:</label>
-            <input type="number" step="0.01" name="precio_por_dia" value="{{ old('precio_por_dia') }}" required min="0" style="margin-bottom: 15px; width: 100%;"><br>
+            <input type="number" step="0.01" name="precio_por_dia" value="{{ old('precio_por_dia') }}"  style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Imagen:</label>
             <input type="file" name="imagen" id="imagen" accept=".jpg,.jpeg" style="margin-bottom: 5px; width: 100%;">
@@ -54,7 +54,7 @@
 
 
             <label style="display: block; margin-bottom: 5px;">Política de reembolso:</label>
-            <select name="politica_reembolso" required style="margin-bottom: 15px; width: 100%;">
+            <select name="politica_reembolso"  style="margin-bottom: 15px; width: 100%;">
                 <option value="0" {{ old('politica_reembolso') == '0' ? 'selected' : '' }}>0%</option>
                 <option value="20" {{ old('politica_reembolso') == '20' ? 'selected' : '' }}>20%</option>
                 <option value="100" {{ old('politica_reembolso') == '100' ? 'selected' : '' }}>100%</option>
@@ -64,7 +64,7 @@
             <input type="text" name="disclaimer" value="{{ old('disclaimer') }}" style="margin-bottom: 15px; width: 100%;"><br>
 
             <label style="display: block; margin-bottom: 5px;">Año de producción:</label>
-            <input type="number" name="anio_produccion" value="{{ old('anio_produccion') }}" required style="margin-bottom: 20px; width: 100%;"><br>
+            <input type="number" name="anio_produccion" value="{{ old('anio_produccion') }}" style="margin-bottom: 20px; width: 100%;"><br>
 
             <button type="submit" style="background-color: #f97316; color: white; font-weight: bold; padding: 10px 23px; border-radius: 3px; border: none; cursor: pointer; width:100%;">
                 Guardar Maquinaria

@@ -262,7 +262,10 @@
                     <input type="text" name="fecha_fin" placeholder="Fecha fin" autocomplete="off">
                 </div>
                 <button type="submit" class="btn-alquilar"
-                        @if($maquinaria->disponibilidad_id != 1 || (Auth::user()->isAdmin())) disabled @endif
+                        @if($maquinaria->disponibilidad_id != 1) disabled @endif  // si la maquina no esta disponible no se puede reservar
+                        @auth // si el usuario es admin o empleado no se puede reservar
+                            @if(    (Auth::user()->isAdmin()) || (Auth::user()->isEmployee())  )  disabled  @endif
+                        @endauth
                         onmouseover="if(!this.disabled) this.style.backgroundColor='#d6640d'"
                         onmouseout="if(!this.disabled) this.style.backgroundColor='#f97316'">
                     Reservar

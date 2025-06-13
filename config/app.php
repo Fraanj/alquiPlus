@@ -126,6 +126,10 @@ return [
     ],
 
     'public_url' => env('APP_PUBLIC_URL'),
+<<<<<<< HEAD
     'asset_url' => env('ASSET_URL', 'https://b4b7-181-164-169-75.ngrok-free.app'), //ACA SE COMPLETA CON EL LINK NGROK
+=======
+    'asset_url' => env('ASSET_URL', 'https://7121-200-127-44-229.ngrok-free.app'), //ACA SE COMPLETA CON EL LINK NGROK
+>>>>>>> 1d32e61a97f6fe10aa0305f4f0a5ca5f1e11a34a
 
 ];

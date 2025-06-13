@@ -35,6 +35,7 @@ class MaquinariaController extends Controller
             'codigo.alpha_num' => 'El código solo puede contener letras y números.',
             'codigo.size' => 'El código debe tener exactamente 6 caracteres.',
             'codigo.unique' => 'Este código ya está en uso.',
+            'tipo_id.required' => 'Debes elegir un tipo de maquinaria',
             'imagen.mimes' => 'Solo se permiten imágenes en formato JPG, JPEG o PNG.',
             'sucursal.required' => 'Debe seleccionar una sucursal.',
             'sucursal.in' => 'La sucursal seleccionada no es válida.',
@@ -144,7 +145,7 @@ class MaquinariaController extends Controller
             // }
         if ($maquinaria->tieneReservasPendientes()) {
             // esto no deberia ser success pero no muestra el mensaje si uso error
-            return redirect('/')->with('success', 'No se puede eliminar la maquina debido a que tiene reservas pendientes.');
+            return redirect('/')->with('false', 'No se puede eliminar la maquina debido a que tiene reservas pendientes.');
         }
         $maquinaria->delete();
         return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');
