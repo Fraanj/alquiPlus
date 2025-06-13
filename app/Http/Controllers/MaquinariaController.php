@@ -144,7 +144,7 @@ class MaquinariaController extends Controller
             // }
         if ($maquinaria->tieneReservasPendientes()) {
             // esto no deberia ser success pero no muestra el mensaje si uso error
-            return redirect('/')->with('success', 'No se puede eliminar la maquina debido a que tiene reservas pendientes.');
+            return redirect('/')->with('error', 'No se puede eliminar la maquina debido a que tiene reservas pendientes.');
         }
         $maquinaria->delete();
         return redirect('/')->with('success', 'Maquinaria eliminada correctamente.');

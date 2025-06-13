@@ -15,9 +15,15 @@
 
 <!-- Mensajito de éxito si el user cambió la contraseña -->
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show success-alert" role="alert" id="success-alert">
+    <div class="alert-dismissible fade show success-alert" role="alert" id="success-alert">
         {{ session('success') }}
         <button type="button" class="btn-close" onclick="closeAlert('success-alert')" aria-label="Close">&times;</button>
+    </div>
+@endif
+@if(session('error'))
+    <div class="alert-dismissible fade show error-alert" role="alert" id="error-alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" onclick="closeAlert('error-alert')" aria-label="Close">&times;</button>
     </div>
 @endif
 

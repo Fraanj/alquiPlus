@@ -125,7 +125,6 @@
                                     </button>
                                 </div>
                             </div>
-
                         @endforeach
                     </div>
                 @endif
@@ -155,66 +154,66 @@
             </div>
         </div>
 
+    </div>
+@endsection
 
-        @endsection
+<!-- mover esto al archivo JS -->
+<script>
+    function abrirModalRestaurar(url, nombre) {
+        // Texto dentro del modal
+        document.getElementById('texto-maquina-restaurar').innerText =
+            `¿Estás seguro de que querés restaurar la máquina "${nombre}"?`;
 
-        <!-- mover esto al archivo JS -->
-        <script>
-            function abrirModalRestaurar(url, nombre) {
-                // Texto dentro del modal
-                document.getElementById('texto-maquina-restaurar').innerText =
-                    `¿Estás seguro de que querés restaurar la máquina "${nombre}"?`;
+        // Setea la acción del form con la URL generada
+        document.getElementById('form-restaurar').action = url;
 
-                // Setea la acción del form con la URL generada
-                document.getElementById('form-restaurar').action = url;
+        // Muestra el modal
+        document.getElementById('modal-restaurar').classList.remove('hidden');
+    }
 
-                // Muestra el modal
-                document.getElementById('modal-restaurar').classList.remove('hidden');
-            }
+    function cerrarModalRestaurar() {
+        document.getElementById('modal-restaurar').classList.add('hidden');
+    }
 
-            function cerrarModalRestaurar() {
-                document.getElementById('modal-restaurar').classList.add('hidden');
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('busqueda-nombre');
+        const select = document.getElementById('filtro-sucursal');
+        const orden = document.getElementById('ordenar-precio');
+        const grid = document.getElementById('grid-catalogo-activos');
+        const mensajeVacio = document.getElementById('mensaje-vacio');
+        let cards = Array.from(grid.querySelectorAll('.card'));
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const input = document.getElementById('busqueda-nombre');
-                const select = document.getElementById('filtro-sucursal');
-                const orden = document.getElementById('ordenar-precio');
-                const grid = document.getElementById('grid-catalogo-activos');
-                const mensajeVacio = document.getElementById('mensaje-vacio');
-                let cards = Array.from(grid.querySelectorAll('.card'));
+        function filtrarYOrdenar() {
+            const texto = input ? input.value.toLowerCase() : '';
+            const sucursal = select ? select.value : '';
+            const ordenValor = orden ? orden.value : 'default';
 
-                function filtrarYOrdenar() {
-                    const texto = input ? input.value.toLowerCase() : '';
-                    const sucursal = select ? select.value : '';
-                    const ordenValor = orden ? orden.value : 'default';
-
-                    // Filtrar
-                    cards.forEach(card => {
-                        const nombre = card.getAttribute('data-nombre') || '';
-                        const descripcion = card.getAttribute('data-descripcion') || '';
-                        const suc = card.getAttribute('data-sucursal') || '';
-                        const coincideNombre = nombre.includes(texto) || descripcion.includes(texto);
-                        const coincideSucursal = !sucursal || sucursal === 'Todas' || suc === sucursal;
-                        card.style.display = (coincideNombre && coincideSucursal) ? '' : 'none';
-                    });
-                    // Ordenar solo los visibles
-                    let visibles = cards.filter(card => card.style.display !== 'none');
-                    if (ordenValor === 'asc') {
-                        visibles.sort((a, b) => parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio));
-                    } else if (ordenValor === 'desc') {
-                        visibles.sort((a, b) => parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio));
-                    }
-                    visibles.forEach(card => grid.appendChild(card));
-
-                    // Mostrar/ocultar mensaje vacío
-                    if (mensajeVacio) {
-                        mensajeVacio.style.display = visibles.length === 0 ? 'block' : 'none';
-                    }
-                }
-
-                if (input) input.addEventListener('input', filtrarYOrdenar);
-                if (select) select.addEventListener('change', filtrarYOrdenar);
-                if (orden) orden.addEventListener('change', filtrarYOrdenar);
+            // Filtrar
+            cards.forEach(card => {
+                const nombre = card.getAttribute('data-nombre') || '';
+                const descripcion = card.getAttribute('data-descripcion') || '';
+                const suc = card.getAttribute('data-sucursal') || '';
+                const coincideNombre = nombre.includes(texto) || descripcion.includes(texto);
+                const coincideSucursal = !sucursal || sucursal === 'Todas' || suc === sucursal;
+                card.style.display = (coincideNombre && coincideSucursal) ? '' : 'none';
             });
-        </script>
+            // Ordenar solo los visibles
+            let visibles = cards.filter(card => card.style.display !== 'none');
+            if (ordenValor === 'asc') {
+                visibles.sort((a, b) => parseFloat(a.dataset.precio) - parseFloat(b.dataset.precio));
+            } else if (ordenValor === 'desc') {
+                visibles.sort((a, b) => parseFloat(b.dataset.precio) - parseFloat(a.dataset.precio));
+            }
+            visibles.forEach(card => grid.appendChild(card));
+
+            // Mostrar/ocultar mensaje vacío
+            if (mensajeVacio) {
+                mensajeVacio.style.display = visibles.length === 0 ? 'block' : 'none';
+            }
+        }
+
+        if (input) input.addEventListener('input', filtrarYOrdenar);
+        if (select) select.addEventListener('change', filtrarYOrdenar);
+        if (orden) orden.addEventListener('change', filtrarYOrdenar);
+    });
+</script>

@@ -21,3 +21,27 @@
 .success-alert .btn-close:hover {
     opacity: 0.7;
 }
+
+/* Alertas de error */
+.error-alert {
+    margin: 0;
+    text-align: center;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border: 1px solid #f5c6cb;
+}
+
+.error-alert .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    float: right;
+    line-height: 1;
+    color: #721c24;
+    cursor: pointer;
+}
+
+.error-alert .btn-close:hover {
+    opacity: 0.7;
+}

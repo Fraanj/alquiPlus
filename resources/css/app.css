@@ -1,5 +1,6 @@
 @import './catalogo.css';
 @import './HeaderYFooter.css';
+@import './alerts.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
