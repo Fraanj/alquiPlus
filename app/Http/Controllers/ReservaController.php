@@ -231,7 +231,7 @@ class ReservaController extends Controller
 
     public function failure(Request $request)
     {
-        dd('FAILURE CALLBACK', $request->all());
+        //dd('FAILURE CALLBACK', $request->all()); LINEA PARA DEBUG.
         $paymentId = $request->get('payment_id');
         $status = $request->get('status');
         $externalReference = $request->get('external_reference');
@@ -246,7 +246,7 @@ class ReservaController extends Controller
 
     public function pending(Request $request)
     {
-        dd('PENDING CALLBACK', $request->all());
+        // dd('PENDING CALLBACK', $request->all()); línea que muestra para debuguear.
         $paymentId = $request->get('payment_id');
         $status = $request->get('status');
         $externalReference = $request->get('external_reference');
