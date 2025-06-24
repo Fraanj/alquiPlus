@@ -72,7 +72,7 @@ class ReservaController extends Controller
     public function destroy(Request $request)
     {
         $reserva = reserva::find($request->id);
-        
+
         $reserva->delete();
         return redirect()->route('profile.edit')->with('success', 'Reserva cancelada. Devolucion de dinero correspondiente hecha.');
     }
@@ -89,7 +89,8 @@ class ReservaController extends Controller
         MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new PreferenceClient();
-        $maquina = Maquinaria::find($reserva->maquina_id);
+        $maquina = Maquinaria::find($reserva->maquina_id);        $maquina = Maquinaria::find($reserva->maquina_id);
+
 
         // 🌐 OBTENER LA URL BASE DINÁMICA
         $baseUrl = $this->getPublicUrl();
