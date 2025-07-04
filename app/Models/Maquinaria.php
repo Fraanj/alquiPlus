@@ -45,6 +45,6 @@ class Maquinaria extends Model
     {
         return $reservas = \App\Models\Reserva::where('maquina_id', $this->id)
             ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
-            ->exists();
+                ->exists();
     }
 }

@@ -158,4 +158,25 @@ class MaquinariaController extends Controller
 
         return redirect('/')->with('success', 'Maquinaria restaurada correctamente.');
     }
+
+    public function maintenance($id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
+        if ($maquinaria->tieneReservasPendientes()) {
+            return redirect('/')->with('false', 'No se puede registrar el mantenimiento debido a que la maquinaria tiene reservas pendientes.');
+        }
+        $maquinaria->disponibilidad_id = 3; // ID 3 para "En mantenimiento"
+        $maquinaria->save();
+
+        return redirect('/')->with('success', 'Maquinaria registrada en mantenimiento correctamente.');
+    }
+
+    public function endMaintenance($id)
+    {
+        $maquinaria = Maquinaria::findOrFail($id);
+        $maquinaria->disponibilidad_id = 1; // ID 1 para "Disponible"
+        $maquinaria->save();
+
+        return redirect('/')->with('success', 'Final del mantenimiento registrado correctamente.');
+    }
 }

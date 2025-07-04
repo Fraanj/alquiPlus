@@ -53,6 +53,8 @@
                                     <span style="color:green; font-weight:bold;">Disponible</span>
                                 @elseif($maq->disponibilidad_id == 2)
                                     <span style="color:red; font-weight:bold;">No disponible</span>
+                                @elseif($maq->disponibilidad_id == 3)
+                                    <span style="color:orange; font-weight:bold;">En mantenimiento</span>
                                 @else
                                     <span style="color:red; font-weight:bold;">Fuera de servicio</span>
                                 @endif
@@ -72,6 +74,23 @@
                                     🗑️ Eliminar
                                 </a>
                             </div>
+                        @endif
+                        @if(Auth::user()->isEmployee())
+                            @if($maq->disponibilidad_id == 1)
+                                <div>
+                                    <a href="{{ route('maquinarias.maintenance', $maq->id) }}"
+                                    class="btn btn-outline-warning btn-sm">
+                                        🛠️ Mantenimiento
+                                    </a>
+                                </div>
+                            @elseif($maq->disponibilidad_id == 3)
+                                <div>
+                                    <a href="{{ route('maquinarias.endMaintenance', $maq->id) }}"
+                                    class="btn btn-outline-warning btn-sm">
+                                        🛠️ Terminar Mantenimiento
+                                    </a>
+                                </div>
+                            @endif
                         @endif
                     @endauth
                 </div>
