@@ -54,7 +54,7 @@ class EmployeeController extends Controller
             'telefono' => $validated['telefono'],
             'password' => Hash::make($validated['password']),
             'role' => 'employee',
-            'active' => true,
+            'is_active' => true,
         ]);
 
         return redirect()->route('employees.index')
