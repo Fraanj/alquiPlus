@@ -37,6 +37,8 @@ Route::get('/pago/pendiente', [ReservaController::class, 'pending'])->name('pago
 // Rutas para empleados
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rutas para empleados
+    Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenance'])->name('maquinarias.maintenance');
+    Route::get('/maquinarias/{id}/terminarMmantenimiento', [MaquinariaController::class, 'endMaintenance'])->name('maquinarias.endMaintenance');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
