@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MaquinariaController;
+use App\Http\Controllers\EmployeeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -46,6 +47,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/maquinarias/{id}/delete', [MaquinariaController::class, 'confirmDelete'])->name('maquinarias.confirmDelete');
     Route::delete('/maquinarias/{id}/delete', [MaquinariaController::class, 'destroy'])->name('maquinarias.destroy');
     Route::get('/maquinarias/{id}/restore', [MaquinariaController::class, 'restore'])->name('maquinarias.restore');
+
+    // Empleados (nuevas rutas)
+    Route::get('/empleados', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/empleados/crear', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/empleados', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::get('/empleados/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
+    Route::get('/empleados/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/empleados/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::patch('/empleados/{employee}/desactivar', [EmployeeController::class, 'deactivate'])->name('employees.desactivar');
+    Route::patch('/empleados/{employee}/activar', [EmployeeController::class, 'activate'])->name('employees.activar');
 });
 
 Route::get('/maquinarias/{id}', [MaquinariaController::class, 'show'])->name('maquinarias.show');

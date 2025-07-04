@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'telefono',
         'role',
+        'is_active',
     ];
 
     /**
@@ -42,6 +43,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'fecha_nacimiento' => 'date', // Cambiado de 'edad' y tipo a 'date'
+            'is_active' => 'boolean',
         ];
     }
 
@@ -95,5 +97,40 @@ class User extends Authenticatable
             return number_format($this->dni, 0, '', '.');
         }
         return $this->dni;
+    }
+
+    public function scopeEmployees($query)  //retorna empleados
+    {
+        return $query->where('role', 'employee');
+    }
+
+    // Métodos para activar/desactivar empleados
+    public function deactivate(): bool
+    {
+        $this->is_active = false;
+        return $this->save();
+    }
+
+    public function activate(): bool
+    {
+        $this->is_active = true;
+        return $this->save();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active ?? true; // Por defecto activo si no está definido
+    }
+
+    // Scope para empleados activos
+    public function scopeActiveEmployees($query)
+    {
+        return $query->where('role', 'employee')->where('is_active', true);
+    }
+
+    // Scope para empleados inactivos
+    public function scopeInactiveEmployees($query)
+    {
+        return $query->where('role', 'employee')->where('is_active', false);
     }
 }

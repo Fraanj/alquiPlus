@@ -18,12 +18,11 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('email', 150)->unique();
             $table->string('dni', 8)->unique();
-            // $table->unsignedInteger('edad'); // Columna original eliminada
             $table->date('fecha_nacimiento'); // Nueva columna, obligatoria por defecto
             $table->string('password', 255);
             $table->string('telefono', 20)->nullable();
             $table->enum('role', ['user', 'employee', 'admin'])->default('user');
-            $table->boolean('active')->default(true);
+            $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
