@@ -174,6 +174,10 @@
         </div>
 
     </div>
+
+<div>
+    <a href="{{ route('enviar.email') }}"> mailPrueba</a>
+</div>
 @endsection
 
 <!-- mover esto al archivo JS -->

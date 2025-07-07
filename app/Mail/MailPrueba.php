@@ -13,14 +13,13 @@ class MailPrueba extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected string $subject;
 
     /**
      * Create a new message instance.
      */
     public function __construct()
     {
-        $this->subject = 'Mail Prueba';
+        
     }
 
     /**
