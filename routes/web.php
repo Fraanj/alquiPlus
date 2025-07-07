@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/reservas/{id}/rembolso', [ReservaController::class, 'destroy'])->name('reservas.destroy');
     Route::get('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.pago');
     Route::post('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.confirmarPago');
-
+    Route::get('/enviarEmail', [MailController::class, 'sendTestEmail'])->name('enviar.email');
     // 🔄 RUTAS DE CALLBACK DE MERCADOPAGO (sin middleware auth)
 });
 
