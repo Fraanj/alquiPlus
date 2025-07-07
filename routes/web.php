@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.pago');
     Route::post('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.confirmarPago');
 
-    Route::get('/enviarEmail', [MailController::class, 'sendTestEmail'])->name('enviar.email');
+    // esto esta para pruebas de los mails
     // 🔄 RUTAS DE CALLBACK DE MERCADOPAGO (sin middleware auth)
 });
 
@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/pago/exitoso', [ReservaController::class, 'success'])->name('pago.exitoso');
 Route::get('/pago/fallido', [ReservaController::class, 'failure'])->name('pago.fallido');
 Route::get('/pago/pendiente', [ReservaController::class, 'pending'])->name('pago.pendiente');
+
+Route::get('/enviarEmail', [MailController::class, 'sendTestEmail'])->name('enviar.email');
+Route::get('/enviarPasswordEmail', [MailController::class, 'sendPasswordEmail'])->name('enviar.password.email');
+Route::get('/enviarCancelacion', [MailController::class, 'sendCancelacionMantenimientoEmail'])->name('enviar.cancelacion.mantenimiento.email');
 
 // Rutas para empleados
 Route::middleware(['auth', 'role:employee'])->group(function () {
