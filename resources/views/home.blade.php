@@ -51,12 +51,8 @@
                             <p><strong>Estado:</strong>
                                 @if($maq->disponibilidad_id == 1)
                                     <span style="color:green; font-weight:bold;">Disponible</span>
-                                @elseif($maq->disponibilidad_id == 2)
-                                    <span style="color:red; font-weight:bold;">No disponible</span>
-                                @elseif($maq->disponibilidad_id == 3)
-                                    <span style="color:orange; font-weight:bold;">En mantenimiento</span>
                                 @else
-                                    <span style="color:red; font-weight:bold;">Fuera de servicio</span>
+                                    <span style="color:orange; font-weight:bold;">En mantenimiento</span>
                                 @endif
                             </p>
                         </div>

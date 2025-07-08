@@ -19,7 +19,8 @@ class Maquinaria extends Model
         'politica_reembolso',
         'disclaimer',
         'anio_produccion',
-        'sucursal'
+        'sucursal',
+        'entregada'
     ];
 
     // Constantes para las sucursales disponibles

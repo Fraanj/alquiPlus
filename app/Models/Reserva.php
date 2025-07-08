@@ -19,6 +19,7 @@ class Reserva extends Model
         'fecha_inicio',
         'fecha_fin',
         'monto_total',
+        'estado',
         'fecha_reserva',
     ];
 
@@ -32,5 +33,13 @@ class Reserva extends Model
     public function maquinaria()
     {
         return $this->belongsTo(Maquinaria::class, 'maquina_id')->withTrashed();
+    }
+    public function activa()
+    {
+        return $this->fecha_inicio > \Carbon\Carbon::today() && $this->fecha_fin >= \Carbon\Carbon::today();
+    }
+    public function getPoliticaReembolso()
+    {
+        return $this->maquinaria->politica_reembolso;
     }
 }
