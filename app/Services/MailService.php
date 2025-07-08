@@ -21,8 +21,6 @@ class MailService
 
     public static function enviarMailCancelacionPorMantenimiento($email, $reserva)
     {
-        // dd('dd 1');
         Mail::to($email)->send(new MailCancelacionPorMantenimiento($reserva));
-        dd('dd 2. Email enviado correctamente con la reserva: ' . $reserva->id);
     }
 }

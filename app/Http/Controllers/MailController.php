@@ -35,7 +35,6 @@ class MailController extends Controller
     {
         $reserva = Reserva::find(3);
         mailService::enviarMailCancelacionPorMantenimiento('mastrangelolautaro19@gmail.com', $reserva);
-        dd("dd 3");
         return redirect("/")->with('success', 'Email de cancelación por mantenimiento enviado correctamente.');
     }
 }
