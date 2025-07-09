@@ -35,6 +35,13 @@
             </div>
 
         @endif
+        @if(Auth::user()->isEmployee())
+            <div>
+                <a class="btn btn-primary" href="{{ route('reservas.historial') }}">
+                    Historial de reservas
+                </a>
+            </div>
+        @endif
         <!-- Usuario AUTENTICADO - Dropdown -->
         <div class="user-dropdown" x-data="{ open: false }" x-on:click.outside="open = false">
             <button @click="open = !open" class="user-button" type="button">
