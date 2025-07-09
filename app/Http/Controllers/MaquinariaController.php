@@ -159,16 +159,47 @@ class MaquinariaController extends Controller
         return redirect('/')->with('success', 'Maquinaria restaurada correctamente.');
     }
 
-    public function maintenance($id)
+    public function maintenanceForm($id)
     {
         $maquinaria = Maquinaria::findOrFail($id);
-        if ($maquinaria->tieneReservasPendientes()) {
-            return redirect('/')->with('false', 'No se puede registrar el mantenimiento debido a que la maquinaria tiene reservas pendientes.');
+        return view('maquinarias.maintenance', compact('maquinaria'));
+    }
+
+    public function startMaintenance(Request $request, $id)
+    {
+        $request->validate([
+            'fecha_inicio' => 'required|date|after_or_equal:yesterday',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+        ], [
+            'fecha_inicio.required' => 'La fecha de inicio es obligatoria.',
+            'fecha_inicio.after_or_equal' => 'La fecha de inicio no puede ser anterior a hoy.',
+            'fecha_fin.required' => 'La fecha de fin es obligatoria.',
+            'fecha_fin.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+        ]);
+
+        $maquinaria = Maquinaria::findOrFail($id);
+        
+        $ReservasPendientes = \App\Models\Reserva::where('maquina_id', $id)
+            ->where('fecha_inicio', '>=', $request->fecha_inicio)
+            ->where('fecha_fin', '<=', $request->fecha_fin)
+            ->where('estado', '=', 'pendiente')
+            ->get();
+
+        if ($ReservasPendientes->isNotEmpty()) {
+            // Cancelar reservas que coincidan con las fechas
+            foreach ($ReservasPendientes as $reserva) {
+                $reserva->cancelar(); 
+                $reserva->save();
+                
+                // Enviar email de cancelación
+                \App\Services\MailService::enviarMailCancelacionPorMantenimiento($reserva->usuario->email, $reserva);
+            }
         }
-        $maquinaria->disponibilidad_id = 3; // ID 3 para "En mantenimiento"
+
+        $maquinaria->disponibilidad_id = 3; // En mantenimiento
         $maquinaria->save();
 
-        return redirect('/')->with('success', 'Maquinaria registrada en mantenimiento correctamente.');
+        return redirect('/')->with('success', 'Mantenimiento programado correctamente del ' . $request->fecha_inicio . ' al ' . $request->fecha_fin);
     }
 
     public function endMaintenance($id)

@@ -42,4 +42,12 @@ class Reserva extends Model
     {
         return $this->maquinaria->politica_reembolso;
     }
+    public function cancelar()
+    {
+        $this->estado = "cancelada";
+    }
+    public function completar()
+    {
+        $this->maquinaria->estado = "completada";
+    }
 }

@@ -43,7 +43,8 @@ Route::get('/enviarCancelacion', [MailController::class, 'sendCancelacionManteni
 // Rutas para empleados
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rutas para empleados
-    Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenance'])->name('maquinarias.maintenance');
+    Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenanceForm'])->name('maquinarias.maintenance');
+    Route::post('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'startMaintenance'])->name('maquinarias.startMaintenance');
     Route::get('/maquinarias/{id}/terminarMmantenimiento', [MaquinariaController::class, 'endMaintenance'])->name('maquinarias.endMaintenance');
 });
 

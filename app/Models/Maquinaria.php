@@ -48,4 +48,14 @@ class Maquinaria extends Model
             ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
                 ->exists();
     }
+    public function entregada()
+    {
+        $this->entregada = true;
+        $this->save();
+    }
+    public function recibida()
+    {
+        $this->entregada = false;
+        $this->save();
+    }
 }

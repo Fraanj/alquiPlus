@@ -76,14 +76,14 @@
                                 <div>
                                     <a href="{{ route('maquinarias.maintenance', $maq->id) }}"
                                     class="btn btn-outline-warning btn-sm">
-                                        🛠️ Mantenimiento
+                                        🛠️ Programar Mantenimiento
                                     </a>
                                 </div>
-                            @elseif($maq->disponibilidad_id == 3)
+                            @elseif($maq->disponibilidad_id != 1)
                                 <div>
                                     <a href="{{ route('maquinarias.endMaintenance', $maq->id) }}"
                                     class="btn btn-outline-warning btn-sm">
-                                        🛠️ Terminar Mantenimiento
+                                        ✅ Terminar Mantenimiento
                                     </a>
                                 </div>
                             @endif
