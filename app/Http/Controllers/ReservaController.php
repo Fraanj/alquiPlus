@@ -265,48 +265,39 @@ class ReservaController extends Controller
         ]);
     }
 
-    /*
-    public function pago(Request $request)
+    public function historialReservas()
     {
-    if ($request->isMethod('post')) {
-        $reserva = session('reserva_temporal');
-        if ($reserva) {
-            $reserva->save();
-            session()->forget('reserva_temporal');
+        $reservas = Reserva::all();
 
-            // Preparar MercadoPago
-            $publicKey = config('services.mercadopago.key');
-            MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
-
-            $client = new PreferenceClient();
-            $preference = $client->create([
-                "items" => [[
-                    "title" => "Alquiler de maquinaria ID {$reserva->maquina_id}",
-                    "quantity" => 1,
-                    "unit_price" => $reserva->monto_total
-                ]],
-                "statement_descriptor" => "MANNY Maquinarias",
-                "external_reference" => "reserva_" . $reserva->id,
-                "metadata" => [
-                    "reserva_id" => $reserva->id,
-                    "maquina_id" => $reserva->maquina_id,
-                    "fecha_inicio" => $reserva->fecha_inicio,
-                    "fecha_fin" => $reserva->fecha_fin,
-                    "user_id" => $reserva->user_id
-                ],
-                "back_urls" => [
-                    "success" => route('pago.success'),
-                    "failure" => route('pago.failure'),
-                    "pending" => route('pago.pending')
-                ],
-                "auto_return" => "approved"
-            ]);
-
-            // Podés pasar $preference a la vista, o redirigir al checkout
-            return redirect($preference->init_point);
-        }
+        return view('reservas.historialReservas', compact('reservas'));
     }
 
-    return redirect()->route('home')->with('error', 'No se encontró una reserva para procesar el pago.');
-    }*/
+    public function confirmada($reservaId)
+    {
+        $reserva = Reserva::findOrFail($reservaId);
+        // dd("dfg"); // Quitar esto
+        $reserva->maquinaria->entregada();
+        $reserva->estado = 'confirmada';
+        $reserva->save();
+        return redirect()->back();
+    }
+
+    public function completada($reservaId)
+    {
+        $reservas = Reserva::findOrFail($reservaId);
+        $reservas->maquinaria->recibida();
+        $reservas->estado = 'completada';
+        $reservas->save();
+        return redirect()->back();
+    }
+
+    public function cancelar(Reserva $reserva)
+    {
+        if ($reserva->estado != 'pendiente') {
+            return redirect()->back()->with('error', 'La reserva no se puede cancelar');
+        }
+        $reserva->cancelar(); // Usa tu método existente
+        
+        return redirect()->back()->with('success', 'Reserva cancelada correctamente');
+    }
 }

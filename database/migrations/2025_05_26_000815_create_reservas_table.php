@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('fecha_fin');
             $table->decimal('monto_total', 10, 2);
             $table->timestamp('fecha_reserva')->useCurrent();
-            $table->enum('estado', ['pendiente', 'cancelada', 'completada'])
+            $table->enum('estado', ['pendiente', 'confirmada', 'cancelada', 'completada'])
               ->default('pendiente');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -36,7 +36,7 @@ class Reserva extends Model
     }
     public function activa()
     {
-        return $this->fecha_inicio > \Carbon\Carbon::today() && $this->fecha_fin >= \Carbon\Carbon::today();
+        return ($this->estado == "pendiente") and ($this->fecha_inicio > \Carbon\Carbon::today() && $this->fecha_fin >= \Carbon\Carbon::today());
     }
     public function getPoliticaReembolso()
     {
@@ -45,9 +45,48 @@ class Reserva extends Model
     public function cancelar()
     {
         $this->estado = "cancelada";
+        $this->save();
     }
     public function completar()
     {
         $this->maquinaria->estado = "completada";
+        $this->save();
+    }
+    //agrego logica para evitar repetir codigo a la hora de mostrar los estados
+    private function getEstadoBadge()
+    {
+        $badges = [
+            'pendiente' => [
+                'class' => 'estado-pendiente',
+                'icon' => '⏳',
+                'text' => 'Pendiente'
+            ],
+            'confirmada' => [
+                'class' => 'estado-confirmada', 
+                'icon' => '✅',
+                'text' => 'Confirmada'
+            ],
+            'cancelada' => [
+                'class' => 'estado-cancelada',
+                'icon' => '❌', 
+                'text' => 'Cancelada'
+            ],
+            'completada' => [
+                'class' => 'estado-completada',
+                'icon' => '🎉',
+                'text' => 'Completada'
+            ]
+        ];
+
+        return $badges[$this->estado] ?? [
+            'class' => 'estado-default',
+            'icon' => '❓',
+            'text' => $this->estado
+        ];
+    }
+    public function getEstado()
+    {
+        $badge = $this->getEstadoBadge();
+        return "<span class=\"estado-badge {$badge['class']}\">{$badge['icon']} {$badge['text']}</span>";
     }
 }
