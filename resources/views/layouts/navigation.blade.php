@@ -28,6 +28,12 @@
                     Gestionar Empleados
                 </a>
             </div>
+            <div>
+                <a class="btn btn-primary" href="{{ route('estadisticas') }}">
+                    Ver estadísticas
+                </a>
+            </div>
+
         @endif
         <!-- Usuario AUTENTICADO - Dropdown -->
         <div class="user-dropdown" x-data="{ open: false }" x-on:click.outside="open = false">
