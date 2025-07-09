@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Usuario;
+use App\Models\User;
 use App\Models\Maquinaria;
 
 class Reserva extends Model
@@ -14,11 +14,12 @@ class Reserva extends Model
     protected $table = 'reservas';
 
     protected $fillable = [
-        'usuario_id',
+        'user_id',
         'maquina_id',
         'fecha_inicio',
         'fecha_fin',
         'monto_total',
+        'estado',
         'fecha_reserva',
     ];
 
@@ -27,7 +28,7 @@ class Reserva extends Model
     // Relaciones
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'usuario_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function maquinaria()
     {
@@ -40,5 +41,13 @@ class Reserva extends Model
     public function getPoliticaReembolso()
     {
         return $this->maquinaria->politica_reembolso;
+    }
+    public function cancelar()
+    {
+        $this->estado = "cancelada";
+    }
+    public function completar()
+    {
+        $this->maquinaria->estado = "completada";
     }
 }

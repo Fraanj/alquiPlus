@@ -60,6 +60,11 @@ class ReservaController extends Controller
 
         session(['reserva_temporal' => $reserva]);
 
+        //skippear pagor
+        $reserva->save();
+        session()->forget('reserva_temporal');
+        return redirect()->route('home')->with('success', 'Reserva creada exitosamente. Por favor, proceda al pago.');
+
         return redirect()->route('reservas.pago');
     }
     public function confirmarRembolso($id)

@@ -19,7 +19,8 @@ class Maquinaria extends Model
         'politica_reembolso',
         'disclaimer',
         'anio_produccion',
-        'sucursal'
+        'sucursal',
+        'entregada'
     ];
 
     // Constantes para las sucursales disponibles
@@ -46,5 +47,15 @@ class Maquinaria extends Model
         return $reservas = \App\Models\Reserva::where('maquina_id', $this->id)
             ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
                 ->exists();
+    }
+    public function entregada()
+    {
+        $this->entregada = true;
+        $this->save();
+    }
+    public function recibida()
+    {
+        $this->entregada = false;
+        $this->save();
     }
 }

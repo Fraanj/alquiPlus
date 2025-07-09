@@ -14,13 +14,14 @@ class CreateMaquinariasTable extends Migration
             $table->string('nombre', 100);
             $table->text('descripcion')->nullable();
             $table->unsignedBigInteger('tipo_id');
-            $table->unsignedBigInteger('disponibilidad_id');
+            $table ->unsignedBigInteger('disponibilidad_id');
             $table->decimal('precio_por_dia', 10, 2);
             $table->string('imagen', 255)->nullable();
             $table->enum('politica_reembolso', ['0', '20', '100']);
             $table->string('disclaimer', 255)->nullable();
             $table->integer('anio_produccion');
             $table->enum('sucursal', ['La Plata', 'Berisso', 'Ensenada']);
+            $table->boolean('entregada')->default(false); // Indica si la maquinaria esta entregada
 
             // Claves foráneas (opcionalmente con restricciones)
             $table->foreign('tipo_id')->references('id')->on('tipos_maquinaria');

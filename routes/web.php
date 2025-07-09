@@ -6,6 +6,7 @@ use App\Http\Controllers\ReservaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MaquinariaController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\MailController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.pago');
     Route::post('/reservas/pago', [ReservaController::class, 'pago'])->name('reservas.confirmarPago');
 
+    // esto esta para pruebas de los mails
     // 🔄 RUTAS DE CALLBACK DE MERCADOPAGO (sin middleware auth)
 });
 
@@ -34,10 +36,15 @@ Route::get('/pago/exitoso', [ReservaController::class, 'success'])->name('pago.e
 Route::get('/pago/fallido', [ReservaController::class, 'failure'])->name('pago.fallido');
 Route::get('/pago/pendiente', [ReservaController::class, 'pending'])->name('pago.pendiente');
 
+Route::get('/enviarEmail', [MailController::class, 'sendTestEmail'])->name('enviar.email');
+Route::get('/enviarPasswordEmail', [MailController::class, 'sendPasswordEmail'])->name('enviar.password.email');
+Route::get('/enviarCancelacion', [MailController::class, 'sendCancelacionMantenimientoEmail'])->name('enviar.cancelacion.mantenimiento.email');
+
 // Rutas para empleados
 Route::middleware(['auth', 'role:employee'])->group(function () {
     // Rutas para empleados
-    Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenance'])->name('maquinarias.maintenance');
+    Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenanceForm'])->name('maquinarias.maintenance');
+    Route::post('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'startMaintenance'])->name('maquinarias.startMaintenance');
     Route::get('/maquinarias/{id}/terminarMmantenimiento', [MaquinariaController::class, 'endMaintenance'])->name('maquinarias.endMaintenance');
 });
 
