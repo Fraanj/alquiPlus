@@ -47,6 +47,10 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
     Route::get('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'maintenanceForm'])->name('maquinarias.maintenance');
     Route::post('/maquinarias/{id}/mantenimiento', [MaquinariaController::class, 'startMaintenance'])->name('maquinarias.startMaintenance');
     Route::get('/maquinarias/{id}/terminarMmantenimiento', [MaquinariaController::class, 'endMaintenance'])->name('maquinarias.endMaintenance');
+    Route::get('/historialReservas', [ReservaController::class, 'historialReservas'])->name('reservas.historial');
+    Route::get('/reserva/{reserva}/confirmada', [ReservaController::class, 'confirmada']);
+    Route::get('/reserva/{reserva}/completada', [ReservaController::class, 'completada']);
+    Route::get('/reserva/{reserva}/cancelar', [ReservaController::class, 'cancelar']);
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

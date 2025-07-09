@@ -189,7 +189,6 @@ class MaquinariaController extends Controller
             // Cancelar reservas que coincidan con las fechas
             foreach ($ReservasPendientes as $reserva) {
                 $reserva->cancelar(); 
-                $reserva->save();
                 
                 // Enviar email de cancelación
                 \App\Services\MailService::enviarMailCancelacionPorMantenimiento($reserva->usuario->email, $reserva);
