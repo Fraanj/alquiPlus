@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MaquinariaController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\EstadisticasController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -56,6 +57,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/maquinarias/{id}/delete', [MaquinariaController::class, 'confirmDelete'])->name('maquinarias.confirmDelete');
     Route::delete('/maquinarias/{id}/delete', [MaquinariaController::class, 'destroy'])->name('maquinarias.destroy');
     Route::get('/maquinarias/{id}/restore', [MaquinariaController::class, 'restore'])->name('maquinarias.restore');
+    Route::get('/estadisticas', [EstadisticasController::class, 'index'])->name('estadisticas');
+    Route::get('/estadisticas/monto-facturado', [EstadisticasController::class, 'montoFacturado'])->name('estadisticas.montoFacturado');
+    Route::get('/estadisticas/reservas-totales', [EstadisticasController::class, 'reservasTotales'])->name('estadisticas.reservasTotales');
+    Route::get('/estadisticas/nuevos-clientes', [EstadisticasController::class, 'nuevosClientes'])->name('estadisticas.nuevos-clientes');
 
     // Empleados (nuevas rutas)
     Route::get('/empleados', [EmployeeController::class, 'index'])->name('employees.index');
