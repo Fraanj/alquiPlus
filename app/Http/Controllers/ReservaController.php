@@ -78,7 +78,8 @@ class ReservaController extends Controller
     {
         $reserva = reserva::find($request->id);
 
-        $reserva->delete();
+        $reserva->cancelar();
+        
         return redirect()->route('profile.edit')->with('success', 'Reserva cancelada. Devolucion de dinero correspondiente hecha.');
     }
 
