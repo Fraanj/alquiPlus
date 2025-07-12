@@ -10,6 +10,13 @@ use App\Models\User;
 
 class EstadisticasController extends Controller
 {
+    private function checkFechaFin($fechaFin)
+    {
+        if ($fechaFin == Carbon::today()->format('Y-m-d')) {
+            return Carbon::tomorrow()->format('Y-m-d');
+        }
+        return $fechaFin;
+    }
     public function index()
     {
         $usuario = Auth::user();
@@ -40,6 +47,8 @@ class EstadisticasController extends Controller
             if ($fechaInicio > $hoy || $fechaFin > $hoy) {
                 return redirect()->back()->with('error', 'Las fechas no pueden estar en el futuro.');
             }
+
+            $fechaFin = $this->checkFechaFin($fechaFin);
 
             // Consultar reservas en el rango
             $reservas = Reserva::whereBetween('fecha_reserva', [$fechaInicio, $fechaFin])->get();
@@ -95,6 +104,7 @@ class EstadisticasController extends Controller
         if ($fechaInicio > $hoy || $fechaFin > $hoy) {
             return redirect()->back()->with('error', 'Las fechas no pueden estar en el futuro.');
         }
+        $fechaFin = $this->checkFechaFin($fechaFin);
 
         $reservas = Reserva::whereBetween('fecha_reserva', [$fechaInicio, $fechaFin])->get();
 
@@ -145,6 +155,8 @@ public function nuevosClientes(Request $request)
 
         $fechaInicio = $request->input('fecha_inicio');
         $fechaFin = $request->input('fecha_fin');
+
+        $fechaFin = $this->checkFechaFin($fechaFin);
 
         $query = User::where('role', 'user')
                      ->whereDate('created_at', '>=', $fechaInicio)

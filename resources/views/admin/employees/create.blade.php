@@ -13,6 +13,17 @@
     @endif
 
     <div style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        <!-- ✅ Información sobre la contraseña -->
+        <div style="background-color: #e0f2fe; border-left: 4px solid #0288d1; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 18px; margin-right: 8px;">🔐</span>
+                <strong style="color: #0277bd;">Contraseña automática</strong>
+            </div>
+            <p style="margin: 0; color: #01579b; font-size: 14px; line-height: 1.4;">
+                Se generará automáticamente una contraseña segura y será enviada al email del empleado.
+            </p>
+        </div>
+
         <form action="{{ route('employees.store') }}" method="POST">
             @csrf
 
@@ -26,17 +37,11 @@
             <input type="text" name="dni" id="dni" value="{{ old('dni') }}" style="margin-bottom: 15px; width: 100%;" required maxlength="8" pattern="[0-9]{8}" placeholder="12345678"><br>
 
             <label style="display: block; margin-bottom: 5px;">Fecha de nacimiento:</label>
-            <input type="text" name="fecha_nacimiento" id="fecha_nacimiento_flatpickr" value="{{ old('fecha_nacimiento') }}" style="margin-bottom: 5px; width: 100%;" required placeholder="Selecciona la fecha de nacimiento">
+            <input type="text" name="fecha_nacimiento" id="fecha_nacimiento_flatpickr" value="{{ old('fecha_nacimiento') }}" style="margin-bottom: 5px; width: 100%;" required placeholder="Selecciona la fecha de nacimiento" autocomplete="off">
             <small style="color: #666; display: block; margin-bottom: 15px;">El empleado debe ser mayor de 18 años.</small><br>
 
             <label style="display: block; margin-bottom: 5px;">Teléfono:</label>
             <input type="text" name="telefono" value="{{ old('telefono') }}" style="margin-bottom: 15px; width: 100%;" required maxlength="20" placeholder="+54 9 11 1234-5678"><br>
-
-            <label style="display: block; margin-bottom: 5px;">Contraseña:</label>
-            <input type="password" name="password" id="password" style="margin-bottom: 15px; width: 100%;" required><br>
-
-            <label style="display: block; margin-bottom: 5px;">Confirmar contraseña:</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" style="margin-bottom: 20px; width: 100%;" required><br>
 
             <button type="submit" style="background-color: #f97316; color: white; font-weight: bold; padding: 10px 23px; border-radius: 3px; border: none; cursor: pointer; width:100%;">
                 Crear Empleado
@@ -51,41 +56,19 @@
         </div>
     </div>
 
-    {{-- CDN de Flatpickr --}}
+    <!-- ✅ Flatpickr CSS y JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    {{-- CSS simple para Flatpickr --}}
-    <style>
-        .flatpickr-input[readonly] { width: 100% !important; }
-    </style>
-
-    {{-- Script para DNI (igual que en register) --}}
-    <script>
-        document.getElementById('dni').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.length > 8) {
-                this.value = this.value.slice(0, 8);
-            }
-        });
-    </script>
-
-    {{-- Inicializar Flatpickr (igual que en register) --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Calculamos la fecha máxima para tener 18 años
-            let eighteenYearsAgo = new Date();
-            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
-
-            // Asegurarse que flatpickr esté disponible globalmente desde app.js
-            //if (typeof flatpickr !== 'undefined') {
+            // ✅ Configurar Flatpickr para fecha de nacimiento
             flatpickr("#fecha_nacimiento_flatpickr", {
                 dateFormat: "Y-m-d",
                 altInput: true,
-                altFormat: "j F, Y",
-                maxDate: eighteenYearsAgo, // Usamos la fecha calculada
-                allowInput: true, // Permite al usuario escribir la fecha directamente
-                locale: { // Opcional: para traducir Flatpickr al español
+                altFormat: "d/m/Y",
+                maxDate: new Date(new Date().setFullYear(new Date().getFullYear() - 18)), // Máximo 18 años atrás
+                locale: {
                     firstDayOfWeek: 1,
                     weekdays: {
                         shorthand: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
@@ -98,86 +81,37 @@
                             "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
                         ]
                     },
-                    ordinal: () => { return "º"; }
+                    ordinal: () => "º"
                 },
+                allowInput: true,
+                clickOpens: true,
                 onReady: function(selectedDates, dateStr, instance) {
-                    // 🔧 Forzar el ancho después de que Flatpickr se inicialice
                     if (instance.altInput) {
                         instance.altInput.style.width = '100%';
                         instance.altInput.style.boxSizing = 'border-box';
                     }
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        const selectedDate = selectedDates[0];
+                        const today = new Date();
+                        const age = today.getFullYear() - selectedDate.getFullYear();
+                        const monthDiff = today.getMonth() - selectedDate.getMonth();
+                        
+                        // Verificar si es mayor de 18 años
+                        if (age < 18 || (age === 18 && monthDiff < 0) || 
+                            (age === 18 && monthDiff === 0 && today.getDate() < selectedDate.getDate())) {
+                            alert('El empleado debe ser mayor de 18 años.');
+                            instance.clear();
+                        }
+                    }
                 }
             });
-            //} else {
-            // console.error('Flatpickr no está definido. Asegúrate de que app.js se cargue correctamente y defina window.flatpickr.');
-            // }
+
+            // ✅ Validación del DNI (solo números)
+            document.getElementById('dni').addEventListener('input', function (e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
         });
     </script>
-
-    {{-- Validaciones del formulario --}}
-    <script>
-        const formElement = document.querySelector('form[action="{{ route('employees.store') }}"]');
-        if (formElement) {
-            formElement.addEventListener('submit', function(e) {
-                // Validar DNI
-                const dni = document.getElementById('dni').value;
-                if (dni.length !== 8) {
-                    e.preventDefault();
-                    alert('El DNI debe tener exactamente 8 dígitos');
-                    document.getElementById('dni').focus();
-                    return;
-                }
-
-                // Validar contraseñas
-                const passwordInput = document.getElementById('password');
-                const confirmPasswordInput = document.getElementById('password_confirmation');
-
-                if (passwordInput.value !== confirmPasswordInput.value) {
-                    e.preventDefault();
-                    alert('Las contraseñas no coinciden');
-                    confirmPasswordInput.focus();
-                    return;
-                }
-
-                if (passwordInput.value.length < 8) {
-                    e.preventDefault();
-                    alert('La contraseña debe tener al menos 8 caracteres');
-                    passwordInput.focus();
-                    return;
-                }
-
-                // Validar fecha de nacimiento (doble validación)
-                const fechaNacimiento = document.querySelector('input[name="fecha_nacimiento"]');
-                if (fechaNacimiento && fechaNacimiento.value) {
-                    const fechaIngresada = new Date(fechaNacimiento.value);
-                    const hoy = new Date();
-
-                    if (fechaIngresada >= hoy) {
-                        e.preventDefault();
-                        alert('La fecha de nacimiento debe ser anterior a hoy');
-                        fechaNacimiento.focus();
-                        return;
-                    }
-
-                    // Verificar edad mínima (18 años)
-                    const edad = hoy.getFullYear() - fechaIngresada.getFullYear();
-                    const mesActual = hoy.getMonth();
-                    const mesNacimiento = fechaIngresada.getMonth();
-
-                    let edadFinal = edad;
-                    if (mesNacimiento > mesActual || (mesNacimiento === mesActual && fechaIngresada.getDate() > hoy.getDate())) {
-                        edadFinal--;
-                    }
-
-                    if (edadFinal < 18) {
-                        e.preventDefault();
-                        alert('El empleado debe ser mayor de 18 años');
-                        fechaNacimiento.focus();
-                        return;
-                    }
-                }
-            });
-        }
-    </script>
-
 @endsection

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
 
 class EmployeeController extends Controller
 {
@@ -43,8 +44,15 @@ class EmployeeController extends Controller
             'dni' => ['required', 'string', 'size:8', 'unique:users'],
             'fecha_nacimiento' => ['required', 'date', 'before:today'],
             'telefono' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $temporalPassword = Str::password(
+            length: 12,
+            letters: true,
+            numbers: true,
+            symbols: true,
+            spaces: false
+        );
 
         User::create([
             'name' => $validated['name'],
@@ -52,10 +60,12 @@ class EmployeeController extends Controller
             'dni' => $validated['dni'],
             'fecha_nacimiento' => $validated['fecha_nacimiento'],
             'telefono' => $validated['telefono'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'] = Hash::make($temporalPassword),
             'role' => 'employee',
             'is_active' => true,
         ]);
+
+        \App\Services\MailService::enviarContraseñaMail($validated['email'], $temporalPassword);
 
         return redirect()->route('employees.index')
             ->with('success', 'Empleado creado exitosamente.');
