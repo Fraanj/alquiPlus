@@ -286,6 +286,13 @@ class ReservaController extends Controller
     public function completada($reservaId)
     {
         $reservas = Reserva::findOrFail($reservaId);
+
+        if (Carbon::today() > $reservas->fecha_fin) {
+            $diasRetrasados = Carbon::today()->diffInDays($reservas->fecha_fin, true);
+            $extra = $diasRetrasados * $reservas->maquinaria->precio_por_dia / 2; // 50% de recargo por día de retraso
+            \App\Services\MailService::enviarMailRetrasoEntrega($reservas->usuario->email, $reservas, $extra, $diasRetrasados);
+        }
+
         $reservas->maquinaria->recibida();
         $reservas->estado = 'completada';
         $reservas->save();
@@ -298,7 +305,9 @@ class ReservaController extends Controller
             return redirect()->back()->with('error', 'La reserva no se puede cancelar');
         }
         $reserva->cancelar(); // Usa tu método existente
-        
-        return redirect()->back()->with('success', 'Reserva cancelada correctamente');
+
+        \App\Services\MailService::enviarMailCancelacionManual($reserva->usuario->email, $reserva);
+
+        return redirect()->back()->with('success', 'Reserva cancelada correctamente. Se envio un mail al usuario');
     }
 }

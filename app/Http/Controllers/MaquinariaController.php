@@ -64,6 +64,8 @@ class MaquinariaController extends Controller
 
         // Get all reserved date ranges for this machine which are still active
         $reservas = \App\Models\Reserva::where('maquina_id', $id)
+            ->where('estado', 'pendiente')
+            ->orWhere('estado', 'confirmada')
             ->where('fecha_fin', '>=', \Carbon\Carbon::yesterday())
             ->get(['fecha_inicio', 'fecha_fin']);
 

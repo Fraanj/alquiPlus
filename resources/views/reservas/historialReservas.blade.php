@@ -320,18 +320,28 @@
                         <span><strong>Precio/día:</strong> ${{ number_format($reserva->maquinaria->precio_por_dia, 2) }}</span>
                     </div>
                     <div class="mt-3">
+                        @php
+                            $hoy = \Carbon\Carbon::today();
+                            $fechaInicio = \Carbon\Carbon::parse($reserva->fecha_inicio);
+                            $fechaFin = \Carbon\Carbon::parse($reserva->fecha_fin);
+                            $enRangoFechas = $hoy->between($fechaInicio, $fechaFin);
+                        @endphp
+                        
                         @if($reserva->maquinaria->entregada and $reserva->estado == 'confirmada')
                             <button onclick="cambiarEstadoEntrega({{ $reserva->id }}, 'completada')" 
                                     class="inline-flex items-center px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors text-sm">
                                 <span class="mr-2">📥</span>
                                 Marcar como Recibida
                             </button>
-                        @elseif (($reserva->maquinaria->entregada == false) and $reserva->estado == 'pendiente')
+                        @elseif (($reserva->maquinaria->entregada == false) and $reserva->estado == 'pendiente' and $enRangoFechas)
                             <button onclick="cambiarEstadoEntrega({{ $reserva->id }}, 'confirmada')" 
                                     class="inline-flex items-center px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors text-sm">
                                 <span class="mr-2">📤</span>
                                 Marcar como Entregada
                             </button>
+                        @elseif ($reserva->estado == 'pendiente' and !$enRangoFechas)
+                            <span class="inline-flex items-center px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg transition-colors text-sm">
+                                Solo se puede entregar durante el periodo de reserva</span>
                         @else 
                             <span class="inline-flex items-center px-4 py-2 bg-red-500 text-white font-semibold rounded-lg transition-colors text-sm">
                                 Estado de entrega no disponible</span>

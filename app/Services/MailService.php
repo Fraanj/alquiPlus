@@ -23,4 +23,14 @@ class MailService
     {
         Mail::to($email)->send(new MailCancelacionPorMantenimiento($reserva));
     }
+
+    public static function enviarMailCancelacionManual($email, $reserva)
+    {
+        Mail::to($email)->send(new \App\Mail\MailCancelacionManual($reserva));
+    }
+
+    public static function enviarMailRetrasoEntrega($email, $reserva, $extra, $diasAtrasados)
+    {
+        Mail::to($email)->send(new \App\Mail\MailRetrasoEntrega($reserva, $extra, $diasAtrasados));
+    }
 }
