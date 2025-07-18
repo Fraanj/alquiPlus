@@ -86,103 +86,116 @@ class EstadisticasController extends Controller
     }
 
    public function reservasTotales(Request $request)
-{
-    $usuario = Auth::user();
-    if (!$usuario->isAdmin()) {
-        abort(403, 'No autorizado');
-    }
-
-    $fechaInicio = $request->input('fecha_inicio');
-    $fechaFin = $request->input('fecha_fin');
-    $hoy = \Carbon\Carbon::today()->format('Y-m-d');
-
-    if ($fechaInicio && $fechaFin) {
-        if ($fechaInicio > $fechaFin) {
-            return redirect()->back()->with('error', 'La fecha de inicio no puede ser mayor que la fecha de fin.');
+    {
+        $usuario = Auth::user();
+        if (!$usuario->isAdmin()) {
+            abort(403, 'No autorizado');
         }
 
-        if ($fechaInicio > $hoy || $fechaFin > $hoy) {
-            return redirect()->back()->with('error', 'Las fechas no pueden estar en el futuro.');
-        }
-        $fechaFin = $this->checkFechaFin($fechaFin);
+        $fechaInicio = $request->input('fecha_inicio');
+        $fechaFin = $request->input('fecha_fin');
+        $hoy = \Carbon\Carbon::today()->format('Y-m-d');
 
-        $reservas = Reserva::whereBetween('fecha_reserva', [$fechaInicio, $fechaFin])->get();
+        if ($fechaInicio && $fechaFin) {
+            if ($fechaInicio > $fechaFin) {
+                return redirect()->back()->with('error', 'La fecha de inicio no puede ser mayor que la fecha de fin.');
+            }
 
-        if ($reservas->isEmpty()) {
+            if ($fechaInicio > $hoy || $fechaFin > $hoy) {
+                return redirect()->back()->with('error', 'Las fechas no pueden estar en el futuro.');
+            }
+            $fechaFin = $this->checkFechaFin($fechaFin);
+
+            $reservas = Reserva::whereBetween('fecha_reserva', [$fechaInicio, $fechaFin])->get();
+
+            if ($reservas->isEmpty()) {
+                return view('estadisticas.reservasTotales', [
+                    'total' => 0,
+                    'dataPoints' => [],
+                    'fecha_inicio' => $fechaInicio,
+                    'fecha_fin' => $fechaFin,
+                    'hoy' => $hoy
+                ]);
+            }
+
+            $total = $reservas->count();
+
+            // Agrupar por día (cantidad de reservas)
+            $dataPoints = $reservas->groupBy(function ($res) {
+                return \Carbon\Carbon::parse($res->fecha_reserva)->format('Y-m-d');
+            })->map(function ($items) {
+                return $items->count();
+            });
+
             return view('estadisticas.reservasTotales', [
-                'total' => 0,
-                'dataPoints' => [],
+                'total' => $total,
+                'dataPoints' => $dataPoints,
                 'fecha_inicio' => $fechaInicio,
                 'fecha_fin' => $fechaFin,
                 'hoy' => $hoy
             ]);
         }
 
-        $total = $reservas->count();
-
-        // Agrupar por día (cantidad de reservas)
-        $dataPoints = $reservas->groupBy(function ($res) {
-            return \Carbon\Carbon::parse($res->fecha_reserva)->format('Y-m-d');
-        })->map(function ($items) {
-            return $items->count();
-        });
-
-        return view('estadisticas.reservasTotales', [
-            'total' => $total,
-            'dataPoints' => $dataPoints,
-            'fecha_inicio' => $fechaInicio,
-            'fecha_fin' => $fechaFin,
-            'hoy' => $hoy
-        ]);
+        return view('estadisticas.reservasTotales', ['hoy' => $hoy]);
     }
 
-    return view('estadisticas.reservasTotales', ['hoy' => $hoy]);
-}
 
+    public function nuevosClientes(Request $request)
+    {
+        $usuario = Auth::user();
+        if (!$usuario->isAdmin()) {
+            abort(403, 'No autorizado');
+        }
 
-public function nuevosClientes(Request $request)
-{
-    $usuario = Auth::user();
-    if (!$usuario->isAdmin()) {
-        abort(403, 'No autorizado');
+        if ($request->has(['fecha_inicio', 'fecha_fin'])) {
+            $request->validate([
+                'fecha_inicio' => 'required|date',
+                'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            ]);
+
+            $fechaInicio = $request->input('fecha_inicio');
+            $fechaFin = $request->input('fecha_fin');
+
+            $fechaFin = $this->checkFechaFin($fechaFin);
+
+            $query = User::where('role', 'user')
+                        ->whereDate('created_at', '>=', $fechaInicio)
+                        ->whereDate('created_at', '<=', $fechaFin);
+
+            $total = $query->count();
+
+            $data = $query->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
+                        ->groupBy('fecha')
+                        ->orderBy('fecha')
+                        ->get();
+
+            $dataPoints = [];
+            foreach ($data as $d) {
+                $dataPoints[$d->fecha] = $d->cantidad;
+            }
+        } else {
+            $fechaInicio = null;
+            $fechaFin = null;
+            $total = null;
+            $dataPoints = [];
+        }
+
+        $hoy = now()->toDateString();
+
+        return view('estadisticas.nuevosClientes', compact('total', 'dataPoints', 'fechaInicio', 'fechaFin', 'hoy'));
     }
-
-    if ($request->has(['fecha_inicio', 'fecha_fin'])) {
-        $request->validate([
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-        ]);
-
+    public function descargarPdf(Request $request, $tipo)
+    {
+        // Si quieres implementar PDF desde servidor
+        // Necesitarías instalar: composer require barryvdh/laravel-dompdf
+        
         $fechaInicio = $request->input('fecha_inicio');
         $fechaFin = $request->input('fecha_fin');
-
-        $fechaFin = $this->checkFechaFin($fechaFin);
-
-        $query = User::where('role', 'user')
-                     ->whereDate('created_at', '>=', $fechaInicio)
-                     ->whereDate('created_at', '<=', $fechaFin);
-
-        $total = $query->count();
-
-        $data = $query->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
-                      ->groupBy('fecha')
-                      ->orderBy('fecha')
-                      ->get();
-
-        $dataPoints = [];
-        foreach ($data as $d) {
-            $dataPoints[$d->fecha] = $d->cantidad;
-        }
-    } else {
-        $fechaInicio = null;
-        $fechaFin = null;
-        $total = null;
-        $dataPoints = [];
+        
+        // Obtener datos según el tipo
+        // Generar vista especial para PDF
+        // Convertir a PDF
+        
+        return response()->json(['message' => 'Implementar si es necesario']);
     }
-
-    $hoy = now()->toDateString();
-
-    return view('estadisticas.nuevosClientes', compact('total', 'dataPoints', 'fechaInicio', 'fechaFin', 'hoy'));
-}
-
 }

@@ -65,7 +65,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/estadisticas/monto-facturado', [EstadisticasController::class, 'montoFacturado'])->name('estadisticas.montoFacturado');
     Route::get('/estadisticas/reservas-totales', [EstadisticasController::class, 'reservasTotales'])->name('estadisticas.reservasTotales');
     Route::get('/estadisticas/nuevos-clientes', [EstadisticasController::class, 'nuevosClientes'])->name('estadisticas.nuevos-clientes');
-
+    Route::get('/estadisticas/{tipo}/pdf', [EstadisticasController::class, 'descargarPdf'])
+    ->name('estadisticas.pdf')
+    ->middleware('auth');
     // Empleados (nuevas rutas)
     Route::get('/empleados', [EmployeeController::class, 'index'])->name('employees.index');
     Route::get('/empleados/crear', [EmployeeController::class, 'create'])->name('employees.create');
