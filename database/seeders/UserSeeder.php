@@ -49,6 +49,17 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'email_verified_at' => now(),
         ]);
+        User::create([
+            'name' => 'Lauta',
+            'email' => 'mastrangelolautaro19@gmail.com',
+            'dni' => '52663616',
+            'password' => Hash::make('password123'),
+            // 'edad' => 42,
+            'fecha_nacimiento' => Carbon::now()->subYears(25)->format('Y-m-d'),
+            'telefono' => '+54 11 5555-6666',
+            'role' => 'user',
+            'email_verified_at' => now(),
+        ]);
 
         // Tu usuario personal
         User::create([
