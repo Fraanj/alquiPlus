@@ -18,7 +18,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $user = $request->user();
-        $reservas = Reserva::where('user_id', $user->id)->get();
+        $reservas = Reserva::where('user_id', $user->id)->get()->sortBy('fecha_inicio');
 
         return view('profile.edit', [
             'user' => $request->user(),
