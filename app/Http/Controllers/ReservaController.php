@@ -268,7 +268,7 @@ class ReservaController extends Controller
 
     public function historialReservas()
     {
-        $reservas = Reserva::all();
+        $reservas = Reserva::all()->sortByDesc('fecha_inicio');
 
         return view('reservas.historialReservas', compact('reservas'));
     }

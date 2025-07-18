@@ -6,5 +6,6 @@
     'totalLabel' => 'Total de reservas',
     'emptyMessage' => 'No se encontraron reservas en el rango de fechas seleccionado.',
     'chartTitle' => 'Reservas por día',
-    'yAxisLabel' => 'Cantidad de reservas'
+    'yAxisLabel' => 'Reservas Totales',
+    'yAxisLabelDesc' => 'reserva(s)',
 ])
